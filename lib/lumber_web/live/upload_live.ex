@@ -1,7 +1,7 @@
-defmodule LumberyardWeb.UploadLive do
-  use LumberyardWeb, :live_view
+defmodule LumberWeb.UploadLive do
+  use LumberWeb, :live_view
 
-  alias Lumberyard.Contests
+  alias Lumber.Contests
 
   @impl true
   def mount(_params, _session, socket) do

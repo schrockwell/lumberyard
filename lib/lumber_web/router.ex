@@ -1,11 +1,11 @@
-defmodule LumberyardWeb.Router do
-  use LumberyardWeb, :router
+defmodule LumberWeb.Router do
+  use LumberWeb, :router
 
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
-    plug :put_root_layout, {LumberyardWeb.LayoutView, :root}
+    plug :put_root_layout, {LumberWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
@@ -14,7 +14,7 @@ defmodule LumberyardWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/", LumberyardWeb do
+  scope "/", LumberWeb do
     pipe_through :browser
 
     live "/", PageLive, :index
@@ -22,7 +22,7 @@ defmodule LumberyardWeb.Router do
   end
 
   # Other scopes may use custom stacks.
-  # scope "/api", LumberyardWeb do
+  # scope "/api", LumberWeb do
   #   pipe_through :api
   # end
 
@@ -38,7 +38,7 @@ defmodule LumberyardWeb.Router do
 
     scope "/" do
       pipe_through :browser
-      live_dashboard "/dashboard", metrics: LumberyardWeb.Telemetry
+      live_dashboard "/dashboard", metrics: LumberWeb.Telemetry
     end
   end
 end

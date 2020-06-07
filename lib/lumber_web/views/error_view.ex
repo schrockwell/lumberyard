@@ -1,5 +1,5 @@
-defmodule LumberyardWeb.ErrorView do
-  use LumberyardWeb, :view
+defmodule LumberWeb.ErrorView do
+  use LumberWeb, :view
 
   # If you want to customize a particular status code
   # for a certain format, you may uncomment below.

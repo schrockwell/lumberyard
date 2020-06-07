@@ -1,4 +1,4 @@
-defmodule Lumberyard.Repo.Migrations.CreateWwsacSubmissions do
+defmodule Lumber.Repo.Migrations.CreateWwsacSubmissions do
   use Ecto.Migration
 
   def change do

@@ -1,9 +1,9 @@
-defmodule Lumberyard.Contests do
-  alias Lumberyard.Repo
+defmodule Lumber.Contests do
+  alias Lumber.Repo
   import Ecto.Changeset
   import Ecto.Query
 
-  alias Lumberyard.Contests.{Contest}
+  alias Lumber.Contests.{Contest}
 
   def build_wwsac_submission do
     case get_next_wwsac_contest() do

@@ -1,16 +1,16 @@
-defmodule LumberyardWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :lumberyard
+defmodule LumberWeb.Endpoint do
+  use Phoenix.Endpoint, otp_app: :lumber
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
   # Set :encryption_salt if you would also like to encrypt it.
   @session_options [
     store: :cookie,
-    key: "_lumberyard_key",
+    key: "_lumber_key",
     signing_salt: "Dd+/dN7U"
   ]
 
-  socket "/socket", LumberyardWeb.UserSocket,
+  socket "/socket", LumberWeb.UserSocket,
     websocket: true,
     longpoll: false
 
@@ -22,7 +22,7 @@ defmodule LumberyardWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :lumberyard,
+    from: :lumber,
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
@@ -32,7 +32,7 @@ defmodule LumberyardWeb.Endpoint do
     socket "/phoenix/live_reload/socket", Phoenix.LiveReloader.Socket
     plug Phoenix.LiveReloader
     plug Phoenix.CodeReloader
-    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :lumberyard
+    plug Phoenix.Ecto.CheckRepoStatus, otp_app: :lumber
   end
 
   plug Phoenix.LiveDashboard.RequestLogger,
@@ -50,5 +50,5 @@ defmodule LumberyardWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug LumberyardWeb.Router
+  plug LumberWeb.Router
 end

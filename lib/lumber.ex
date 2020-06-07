@@ -1,6 +1,6 @@
-defmodule Lumberyard do
+defmodule Lumber do
   @moduledoc """
-  Lumberyard keeps the contexts that define your domain
+  Lumber keeps the contexts that define your domain
   and business logic.
 
   Contexts are also responsible for managing your data, regardless

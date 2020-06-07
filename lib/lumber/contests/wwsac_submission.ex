@@ -1,10 +1,10 @@
-defmodule Lumberyard.Contests.WwsacSubmission do
+defmodule Lumber.Contests.WwsacSubmission do
   use Ecto.Schema
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
   schema "wwsac_submissions" do
-    belongs_to :contest, Lumberyard.Contests.Contest
+    belongs_to :contest, Lumber.Contests.Contest
 
     # User submission
     field :age_group, :string

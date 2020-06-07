@@ -1,12 +1,12 @@
-defmodule LumberyardWeb do
+defmodule LumberWeb do
   @moduledoc """
   The entrypoint for defining your web interface, such
   as controllers, views, channels and so on.
 
   This can be used in your application as:
 
-      use LumberyardWeb, :controller
-      use LumberyardWeb, :view
+      use LumberWeb, :controller
+      use LumberWeb, :view
 
   The definitions below will be executed for every view,
   controller, etc, so keep them short and clean, focused
@@ -19,19 +19,19 @@ defmodule LumberyardWeb do
 
   def controller do
     quote do
-      use Phoenix.Controller, namespace: LumberyardWeb
+      use Phoenix.Controller, namespace: LumberWeb
 
       import Plug.Conn
-      import LumberyardWeb.Gettext
-      alias LumberyardWeb.Router.Helpers, as: Routes
+      import LumberWeb.Gettext
+      alias LumberWeb.Router.Helpers, as: Routes
     end
   end
 
   def view do
     quote do
       use Phoenix.View,
-        root: "lib/lumberyard_web/templates",
-        namespace: LumberyardWeb
+        root: "lib/lumber_web/templates",
+        namespace: LumberWeb
 
       # Import convenience functions from controllers
       import Phoenix.Controller,
@@ -45,7 +45,7 @@ defmodule LumberyardWeb do
   def live_view do
     quote do
       use Phoenix.LiveView,
-        layout: {LumberyardWeb.LayoutView, "live.html"}
+        layout: {LumberWeb.LayoutView, "live.html"}
 
       unquote(view_helpers())
     end
@@ -72,7 +72,7 @@ defmodule LumberyardWeb do
   def channel do
     quote do
       use Phoenix.Channel
-      import LumberyardWeb.Gettext
+      import LumberWeb.Gettext
     end
   end
 
@@ -87,9 +87,9 @@ defmodule LumberyardWeb do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
-      import LumberyardWeb.ErrorHelpers
-      import LumberyardWeb.Gettext
-      alias LumberyardWeb.Router.Helpers, as: Routes
+      import LumberWeb.ErrorHelpers
+      import LumberWeb.Gettext
+      alias LumberWeb.Router.Helpers, as: Routes
     end
   end
 

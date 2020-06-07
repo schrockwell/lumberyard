@@ -1,5 +1,5 @@
-defmodule LumberyardWeb.LayoutViewTest do
-  use LumberyardWeb.ConnCase, async: true
+defmodule LumberWeb.LayoutViewTest do
+  use LumberWeb.ConnCase, async: true
 
   # When testing helpers, you may want to import Phoenix.HTML and
   # use functions such as safe_to_string() to convert the helper

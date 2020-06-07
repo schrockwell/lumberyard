@@ -5,13 +5,13 @@
 # Inside the script, you can read and write to any of your
 # repositories directly:
 #
-#     Lumberyard.Repo.insert!(%Lumberyard.SomeSchema{})
+#     Lumber.Repo.insert!(%Lumber.SomeSchema{})
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Lumberyard.Repo
-alias Lumberyard.Contests.Contest
+alias Lumber.Repo
+alias Lumber.Contests.Contest
 
 # May 12, 2020 at 1Z
 {:ok, start_date, 0} = DateTime.from_iso8601("2020-05-12T01:00:00Z")

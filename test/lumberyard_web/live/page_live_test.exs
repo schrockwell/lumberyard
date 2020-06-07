@@ -1,5 +1,5 @@
-defmodule LumberyardWeb.PageLiveTest do
-  use LumberyardWeb.ConnCase
+defmodule LumberWeb.PageLiveTest do
+  use LumberWeb.ConnCase
 
   import Phoenix.LiveViewTest
 

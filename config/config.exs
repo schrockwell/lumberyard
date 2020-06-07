@@ -7,16 +7,16 @@
 # General application configuration
 use Mix.Config
 
-config :lumberyard,
-  ecto_repos: [Lumberyard.Repo],
+config :lumber,
+  ecto_repos: [Lumber.Repo],
   generators: [binary_id: true]
 
 # Configures the endpoint
-config :lumberyard, LumberyardWeb.Endpoint,
+config :lumber, LumberWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "TjKwAVvz0SGLcsLnoFmHjp+UAJ5jKWfwcaSf443u3AIK+l0gAJtv3Zmn7NC1ToCW",
-  render_errors: [view: LumberyardWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: Lumberyard.PubSub,
+  render_errors: [view: LumberWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: Lumber.PubSub,
   live_view: [signing_salt: "WO+qfrxq"]
 
 # Configures Elixir's Logger

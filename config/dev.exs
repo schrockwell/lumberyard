@@ -1,10 +1,10 @@
 use Mix.Config
 
 # Configure your database
-config :lumberyard, Lumberyard.Repo,
+config :lumber, Lumber.Repo,
   username: "postgres",
   password: "postgres",
-  database: "lumberyard_dev",
+  database: "lumber_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
@@ -15,7 +15,7 @@ config :lumberyard, Lumberyard.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with webpack to recompile .js and .css sources.
-config :lumberyard, LumberyardWeb.Endpoint,
+config :lumber, LumberWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
@@ -55,13 +55,13 @@ config :lumberyard, LumberyardWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :lumberyard, LumberyardWeb.Endpoint,
+config :lumber, LumberWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/lumberyard_web/(live|views)/.*(ex)$",
-      ~r"lib/lumberyard_web/templates/.*(eex)$"
+      ~r"lib/lumber_web/(live|views)/.*(ex)$",
+      ~r"lib/lumber_web/templates/.*(eex)$"
     ]
   ]
 

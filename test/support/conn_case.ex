@@ -1,4 +1,4 @@
-defmodule LumberyardWeb.ConnCase do
+defmodule LumberWeb.ConnCase do
   @moduledoc """
   This module defines the test case to be used by
   tests that require setting up a connection.
@@ -11,7 +11,7 @@ defmodule LumberyardWeb.ConnCase do
   we enable the SQL sandbox, so changes done to the database
   are reverted at the end of every test. If you are using
   PostgreSQL, you can even run database tests asynchronously
-  by setting `use LumberyardWeb.ConnCase, async: true`, although
+  by setting `use LumberWeb.ConnCase, async: true`, although
   this option is not recommended for other databases.
   """
 
@@ -22,20 +22,20 @@ defmodule LumberyardWeb.ConnCase do
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
-      import LumberyardWeb.ConnCase
+      import LumberWeb.ConnCase
 
-      alias LumberyardWeb.Router.Helpers, as: Routes
+      alias LumberWeb.Router.Helpers, as: Routes
 
       # The default endpoint for testing
-      @endpoint LumberyardWeb.Endpoint
+      @endpoint LumberWeb.Endpoint
     end
   end
 
   setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Lumberyard.Repo)
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Lumber.Repo)
 
     unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Lumberyard.Repo, {:shared, self()})
+      Ecto.Adapters.SQL.Sandbox.mode(Lumber.Repo, {:shared, self()})
     end
 
     {:ok, conn: Phoenix.ConnTest.build_conn()}

@@ -1,5 +1,5 @@
-defmodule Lumberyard.Repo do
+defmodule Lumber.Repo do
   use Ecto.Repo,
-    otp_app: :lumberyard,
+    otp_app: :lumber,
     adapter: Ecto.Adapters.Postgres
 end

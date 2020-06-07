@@ -1,4 +1,4 @@
-defmodule Lumberyard.Repo.Migrations.CreateContests do
+defmodule Lumber.Repo.Migrations.CreateContests do
   use Ecto.Migration
 
   def change do

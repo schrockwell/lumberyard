@@ -1,4 +1,4 @@
-# Lumberyard
+# Lumber
 
 To start your Phoenix server:
 
