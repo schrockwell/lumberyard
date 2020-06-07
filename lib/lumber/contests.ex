@@ -3,12 +3,23 @@ defmodule Lumber.Contests do
   import Ecto.Changeset
   import Ecto.Query
 
-  alias Lumber.Contests.{Contest}
+  alias Lumber.Contests.Contest
+  alias Lumber.Contests.WwsacSubmission
 
   def build_wwsac_submission do
     case get_next_wwsac_contest() do
       nil -> nil
       contest -> Ecto.build_assoc(contest, :wwsac_submissions)
+    end
+  end
+
+  def get_wwsac_submission(id) do
+    WwsacSubmission
+    |> Repo.get(id)
+    |> Repo.preload(:contest)
+    |> case do
+      nil -> :error
+      sub -> {:ok, sub}
     end
   end
 
@@ -43,16 +54,51 @@ defmodule Lumber.Contests do
     [{"None", "None"}, {"Youth YL", "Youth YL"}, {"YL", "YL"}, {"Youth", "Youth"}]
   end
 
-  def new_wwsac_submission_changeset(submission, params \\ %{}) do
+  def new_wwsac_submission_changeset(submission, path \\ nil)
+
+  def new_wwsac_submission_changeset(submission, nil) do
+    submission
+    |> change()
+    |> add_error(:file, "is required")
+  end
+
+  def new_wwsac_submission_changeset(submission, path) do
+    stat = File.stat!(path)
+
+    if stat.size > 1_048_576 do
+      submission
+      |> change()
+      |> add_error(:file, "is larger than 1 MB")
+    else
+      submission
+      |> change(file_contents: File.read!(path))
+      |> validate_required([:file_contents, :contest_id])
+    end
+  end
+
+  def prepare_wwsac_submission_changeset(submission, params \\ %{}) do
     submission
     |> cast(params, [:callsign, :email, :age_group, :power_level, :overlay])
     |> update_callsign(:callsign)
     |> trim_field(:email)
     |> validate_format(:email, ~r/@/, message: "is not a valid e-mail address")
-    |> validate_required([:callsign, :email, :age_group, :power_level, :overlay])
+    |> validate_required([
+      :callsign,
+      :email,
+      :age_group,
+      :power_level,
+      :overlay,
+      :file_contents,
+      :contest_id
+    ])
     |> validate_inclusion(:age_group, Enum.map(age_group_options(), &elem(&1, 1)))
     |> validate_inclusion(:power_level, Enum.map(power_level_options(), &elem(&1, 1)))
     |> validate_inclusion(:overlay, Enum.map(overlay_options(), &elem(&1, 1)))
+  end
+
+  def submit_wwsac_submission_changeset(submission) do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    submission |> change(completed_at: now)
   end
 
   defp update_callsign(changeset, field) do
@@ -82,6 +128,6 @@ defmodule Lumber.Contests do
   end
 
   def save_wwsac_submission(changeset) do
-    Repo.insert(changeset)
+    Repo.insert_or_update(changeset)
   end
 end

@@ -14,6 +14,10 @@ defmodule Lumber.Contests.WwsacSubmission do
     field :overlay, :string
     field :power_level, :string
     field :send_notifications, :boolean
+    field :file_contents, :string
+
+    # Submission flow
+    field :completed_at, :utc_datetime
 
     # Scoring
     field :prefix_count, :integer

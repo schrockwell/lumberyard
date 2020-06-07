@@ -1,21 +1,27 @@
-defmodule LumberWeb.UploadLive do
+defmodule LumberWeb.PrepareWwsacSubmissionLive do
   use LumberWeb, :live_view
 
   alias Lumber.Contests
 
   @impl true
-  def mount(_params, _session, socket) do
-    contest = Contests.get_next_wwsac_contest()
-    sub = Contests.build_wwsac_submission()
-    changeset = Contests.new_wwsac_submission_changeset(sub)
+  def mount(%{"id" => id}, _session, socket) do
+    case Contests.get_wwsac_submission(id) do
+      {:ok, sub} ->
+        contest = sub.contest
+        changeset = Contests.prepare_wwsac_submission_changeset(sub)
 
-    options = %{
-      overlay: Contests.overlay_options(),
-      age_group: Contests.age_group_options(),
-      power_level: Contests.power_level_options()
-    }
+        options = %{
+          overlay: Contests.overlay_options(),
+          age_group: Contests.age_group_options(),
+          power_level: Contests.power_level_options()
+        }
 
-    {:ok, assign(socket, contest: contest, sub: sub, changeset: changeset, options: options)}
+        {:ok, assign(socket, contest: contest, sub: sub, changeset: changeset, options: options)}
+
+      :error ->
+        # TODO: Do something!!
+        {:ok, socket}
+    end
   end
 
   @impl true
@@ -32,14 +38,17 @@ defmodule LumberWeb.UploadLive do
   defp update_changeset(socket, params) do
     changeset =
       socket.assigns.sub
-      |> Contests.new_wwsac_submission_changeset(params)
+      |> Contests.prepare_wwsac_submission_changeset(params)
       |> Map.put(:action, :create)
 
     assign(socket, changeset: changeset)
   end
 
   defp save(socket, params) do
-    changeset = Contests.new_wwsac_submission_changeset(socket.assigns.sub, params)
+    changeset =
+      socket.assigns.sub
+      |> Contests.prepare_wwsac_submission_changeset(params)
+      |> Contests.submit_wwsac_submission_changeset()
 
     case Contests.save_wwsac_submission(changeset) do
       {:ok, sub} ->

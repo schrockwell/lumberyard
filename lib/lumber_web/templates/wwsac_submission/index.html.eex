@@ -1,0 +1,6 @@
+hello WWSAC
+
+<%= form_for @changeset, Routes.wwsac_submission_path(@conn, :create), [multipart: true], fn f -> %>
+  <%= file_input f, :file %>
+  <%= submit "Continue" %>
+<% end  %>
