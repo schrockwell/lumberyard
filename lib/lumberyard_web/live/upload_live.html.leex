@@ -1,0 +1,47 @@
+<%= if @sub.id do %>
+  <h1>Thanks for your submission!</h1>
+  <h2>May the odds be ever in your favor.</h2>
+<% else %>
+  <h1>Upload your log for <%= @contest.title %></h1>
+  <h2>Log files are due before <%= @contest.submissions_before %>
+
+  <%= form_for @changeset, "#", [phx_change: "validate", phx_submit: "submit"], fn f -> %>
+    <fieldset>
+      <label>Callsign</label>
+      <%= text_input f, :callsign, placeholder: "Callsign", phx_debounce: "100" %>
+      <%= error_tag(f, :callsign) %>
+    </fieldset>
+
+    <fieldset>
+      <label>E-mail</label>
+      <%= text_input f, :email, placeholder: "foo@example.com", phx_debounce: "100" %>
+      <%= error_tag(f, :email) %>
+    </fieldset>
+
+    <fieldset>
+      <label>Age Group</label>
+      <%= select f, :age_group, @options.age_group %>
+    </fieldset>
+
+    <fieldset>
+      <label>Power Level</label>
+      <%= select f, :power_level, @options.power_level %>
+    </fieldset>
+
+    <fieldset>
+      <label>Overlay</label>
+      <%= select f, :overlay, @options.overlay %>
+    </fieldset>
+
+    <fieldset>
+      <label>
+        <%= checkbox f, :send_notifications %>
+        E-mail me about this week's contest
+      </label>
+    </fieldset>
+
+    <%= submit disabled: !@changeset.valid? do %>
+      Upload!!!!!! 🚀
+    <% end %>
+  <% end %>
+<% end %>
