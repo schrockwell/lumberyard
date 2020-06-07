@@ -10,7 +10,6 @@ defmodule Lumber.Contests.WwsacSubmission do
     field :age_group, :string
     field :callsign, :string
     field :email, :string
-    field :final_score, :integer
     field :overlay, :string
     field :power_level, :string
     field :send_notifications, :boolean
@@ -23,6 +22,7 @@ defmodule Lumber.Contests.WwsacSubmission do
     field :prefix_count, :integer
     field :qso_count, :integer
     field :qso_points, :integer
+    field :final_score, :integer
 
     timestamps()
   end

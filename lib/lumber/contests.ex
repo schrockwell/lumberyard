@@ -3,6 +3,7 @@ defmodule Lumber.Contests do
   import Ecto.Changeset
   import Ecto.Query
 
+  alias Lumber.Logs
   alias Lumber.Contests.Contest
   alias Lumber.Contests.WwsacSubmission
 
@@ -76,6 +77,37 @@ defmodule Lumber.Contests do
     end
   end
 
+  def analyze_wwsac_submission_file_changeset(%{valid?: false} = changeset) do
+    changeset
+  end
+
+  def analyze_wwsac_submission_file_changeset(%{valid?: true} = changeset) do
+    contents = get_field(changeset, :file_contents)
+
+    case Logs.guess_format(contents) do
+      {:ok, :adif} ->
+        log = HamRadio.ADIF.decode(contents)
+
+        change(changeset,
+          qso_count: length(log.contacts),
+          callsign: guess_my_callsign(log)
+        )
+
+      {:ok, :cabrillo} ->
+        # TODO
+        changeset
+
+      :error ->
+        changeset
+    end
+  end
+
+  defp guess_my_callsign(%{contacts: [contact | _rest]} = _log) do
+    contact.fields["STATION_CALLSIGN"] || contact.fields["OPERATOR"]
+  end
+
+  defp guess_my_callsign(_), do: nil
+
   def prepare_wwsac_submission_changeset(submission, params \\ %{}) do
     submission
     |> cast(params, [:callsign, :email, :age_group, :power_level, :overlay])
@@ -129,5 +161,9 @@ defmodule Lumber.Contests do
 
   def save_wwsac_submission(changeset) do
     Repo.insert_or_update(changeset)
+  end
+
+  def guess_submission_format(sub) do
+    Logs.guess_format(sub.file_contents)
   end
 end

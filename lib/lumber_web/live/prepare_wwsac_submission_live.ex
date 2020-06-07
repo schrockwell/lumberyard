@@ -58,4 +58,12 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
         assign(socket, changeset: changeset)
     end
   end
+
+  defp file_format(sub) do
+    case Contests.guess_submission_format(sub) do
+      {:ok, :cabrillo} -> "Cabrillo"
+      {:ok, :adif} -> "ADIF"
+      :error -> "Unknown"
+    end
+  end
 end

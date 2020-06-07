@@ -18,6 +18,7 @@ defmodule LumberWeb.WwsacSubmissionController do
   def create(conn, %{"wwsac_submission" => %{"file" => file}}) do
     Contests.build_wwsac_submission()
     |> Contests.new_wwsac_submission_changeset(file.path)
+    |> Contests.analyze_wwsac_submission_file_changeset()
     |> Contests.save_wwsac_submission()
     |> case do
       {:ok, sub} ->

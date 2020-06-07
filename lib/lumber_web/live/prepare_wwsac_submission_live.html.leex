@@ -3,7 +3,15 @@
   <h2>May the odds be ever in your favor.</h2>
 <% else %>
   <h1>Upload your log for <%= @contest.title %></h1>
-  <h2>Log files are due before <%= @contest.submissions_before %>
+  <h2>Log files are due before <%= @contest.submissions_before %></h2>
+
+  <ul>
+    <li>Format: <%= file_format(@sub) %></li>
+    <li>QSOs: <%= @sub.qso_count || "Unknown" %></li>
+    <li>QSO Points: <%= @sub.qso_points || "Unknown" %></li>
+    <li>Prefixes: <%= @sub.prefix_count || "Unknown" %></li>
+    <li>Final Score: <%= @sub.final_score || "Unknown" %></li>
+  </ul>
 
   <%= form_for @changeset, "#", [phx_change: "validate", phx_submit: "submit"], fn f -> %>
     <fieldset>
