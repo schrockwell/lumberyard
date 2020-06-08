@@ -52,4 +52,28 @@
       Upload!!!!!! 🚀
     <% end %>
   <% end %>
+
+  <table style="font-family: monospace">
+    <thead>
+      <tr>
+        <th>UTC</th>
+        <th>Callsign</th>
+        <th>Exch</th>
+        <th>Points</th>
+        <th>Mult?</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <%= for contact <- @wwsac_log.contacts do %>
+        <tr>
+          <td><%= contact.datetime %></td>
+          <td><%= contact.callsign %></td>
+          <td><%= contact.exchange_received %></td>
+          <td><%= contact.points %></td>
+          <td><%= contact.multipliers != 0 %></td>
+        </tr>
+      <% end %>
+    </tbody>
+
 <% end %>

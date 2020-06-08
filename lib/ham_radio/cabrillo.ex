@@ -18,10 +18,4 @@ defmodule HamRadio.Cabrillo do
     |> File.stream!([], 32)
     |> Cabrillo.Decoder.decode()
   end
-
-  def stream_file_contacts(filename) do
-    filename
-    |> File.stream!([], 32)
-    |> Cabrillo.Decoder.stream_contacts()
-  end
 end

@@ -2,6 +2,7 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
   use LumberWeb, :live_view
 
   alias Lumber.Contests
+  alias Lumber.Wwsac
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
@@ -9,6 +10,7 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
       {:ok, sub} ->
         contest = sub.contest
         changeset = Contests.prepare_wwsac_submission_changeset(sub)
+        wwsac_log = Wwsac.get_wwsac_log(sub.file_contents)
 
         options = %{
           overlay: Contests.overlay_options(),
@@ -16,7 +18,14 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
           power_level: Contests.power_level_options()
         }
 
-        {:ok, assign(socket, contest: contest, sub: sub, changeset: changeset, options: options)}
+        {:ok,
+         assign(socket,
+           contest: contest,
+           sub: sub,
+           changeset: changeset,
+           options: options,
+           wwsac_log: wwsac_log
+         )}
 
       :error ->
         # TODO: Do something!!

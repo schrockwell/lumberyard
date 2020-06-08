@@ -46,7 +46,7 @@ defmodule HamRadio.Cabrillo.Parser do
         list ->
           finished_words =
             list
-            |> Enum.slice(0..(length(list) - 1))
+            |> Enum.slice(0..-2)
             |> Enum.reject(&(&1 == ""))
 
           rest = List.last(list)
