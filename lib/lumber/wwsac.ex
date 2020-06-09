@@ -4,6 +4,7 @@ defmodule Lumber.Wwsac do
   import Ecto.Query
 
   alias Lumber.Logs
+  alias Lumber.Wwsac
   alias Lumber.Schedule.Contest
   alias Lumber.Wwsac.Submission
 
@@ -20,15 +21,30 @@ defmodule Lumber.Wwsac do
     |> Repo.preload(:contest)
     |> case do
       nil -> :error
-      sub -> {:ok, sub}
+      sub -> {:ok, sub |> put_wwsac_log()}
     end
+  end
+
+  defp put_wwsac_log(sub) do
+    %{sub | wwsac_log: Wwsac.Log.from_file_contents(sub.file_contents)}
+  end
+
+  def count_other_wwsac_submissions(sub) do
+    from(s in Submission,
+      where: s.contest_id == ^sub.contest_id,
+      where: s.callsign == ^sub.callsign,
+      where: not is_nil(s.completed_at),
+      select: s.id
+    )
+    |> Repo.aggregate(:count)
   end
 
   def get_next_wwsac_contest do
     Repo.one(
       from(c in Contest,
         where: c.type == "WWSAC",
-        where: c.started_at >= ^DateTime.utc_now(),
+        where: c.submissions_before >= ^DateTime.utc_now(),
+        order_by: c.submissions_before,
         limit: 1
       )
     )
@@ -82,31 +98,29 @@ defmodule Lumber.Wwsac do
   end
 
   def analyze_wwsac_submission_file_changeset(%{valid?: true} = changeset) do
-    contents = get_field(changeset, :file_contents)
+    log =
+      changeset
+      |> get_field(:file_contents)
+      |> Wwsac.Log.from_file_contents()
 
-    case Logs.guess_format(contents) do
-      {:ok, :adif} ->
-        log = HamRadio.ADIF.decode(contents)
-
-        change(changeset,
-          qso_count: length(log.contacts),
-          callsign: guess_my_callsign(log)
-        )
-
-      {:ok, :cabrillo} ->
-        # TODO
-        changeset
-
-      :error ->
-        changeset
-    end
+    change(changeset,
+      qso_count: length(log.contacts),
+      qso_points: log.total_contact_points,
+      prefix_count: log.total_prefixes,
+      final_score: log.final_score,
+      callsign: guess_my_callsign(log)
+    )
   end
 
   defp guess_my_callsign(%{contacts: [contact | _rest]} = _log) do
-    contact.fields["STATION_CALLSIGN"] || contact.fields["OPERATOR"]
+    contact.my_callsign
   end
 
   defp guess_my_callsign(_), do: nil
+
+  defp option_values(list) do
+    Enum.map(list, &elem(&1, 1))
+  end
 
   def prepare_wwsac_submission_changeset(submission, params \\ %{}) do
     submission
@@ -123,9 +137,9 @@ defmodule Lumber.Wwsac do
       :file_contents,
       :contest_id
     ])
-    |> validate_inclusion(:age_group, Enum.map(age_group_options(), &elem(&1, 1)))
-    |> validate_inclusion(:power_level, Enum.map(power_level_options(), &elem(&1, 1)))
-    |> validate_inclusion(:overlay, Enum.map(overlay_options(), &elem(&1, 1)))
+    |> validate_inclusion(:age_group, option_values(age_group_options()))
+    |> validate_inclusion(:power_level, option_values(power_level_options()))
+    |> validate_inclusion(:overlay, option_values(overlay_options()))
   end
 
   def submit_wwsac_submission_changeset(submission) do
@@ -161,6 +175,32 @@ defmodule Lumber.Wwsac do
 
   def save_wwsac_submission(changeset) do
     Repo.insert_or_update(changeset)
+  end
+
+  def submit_wwsac_submission(changeset) do
+    changeset
+    |> save_wwsac_submission()
+    |> case do
+      {:ok, sub} ->
+        delete_other_submissions(sub)
+        {:ok, sub}
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
+
+  defp delete_other_submissions(sub) do
+    from(s in Submission,
+      where: s.contest_id == ^sub.contest_id,
+      where: s.callsign == ^sub.callsign,
+      where: s.id != ^sub.id
+    )
+    |> Repo.delete_all()
+  end
+
+  def cancel_wwsac_submission(sub) do
+    Repo.delete!(sub)
   end
 
   def guess_submission_format(sub) do

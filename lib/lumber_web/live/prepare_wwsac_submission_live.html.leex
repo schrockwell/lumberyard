@@ -5,6 +5,12 @@
   <h1>Upload your log for <%= @contest.title %></h1>
   <h2>Log files are due before <%= @contest.submissions_before %></h2>
 
+  <%= if @other_subs_count > 0 do %>
+    <div style="color: #c00">
+      This upload will replace your previous submission.
+    </div>
+  <% end %>
+
   <ul>
     <li>Format: <%= file_format(@sub) %></li>
     <li>QSOs: <%= @sub.qso_count || "Unknown" %></li>
@@ -51,6 +57,8 @@
     <%= submit disabled: !@changeset.valid? do %>
       Upload!!!!!! 🚀
     <% end %>
+
+    <button type="button" phx-click="cancel">Cancel Submission</button>
   <% end %>
 
   <table style="font-family: monospace">
@@ -65,7 +73,7 @@
     </thead>
 
     <tbody>
-      <%= for contact <- @wwsac_log.contacts do %>
+      <%= for contact <- @sub.wwsac_log.contacts do %>
         <tr>
           <td><%= contact.datetime %></td>
           <td><%= contact.callsign %></td>

@@ -9,7 +9,7 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
       {:ok, sub} ->
         contest = sub.contest
         changeset = Wwsac.prepare_wwsac_submission_changeset(sub)
-        wwsac_log = Wwsac.Log.from_file_contents(sub.file_contents)
+        other_subs_count = Wwsac.count_other_wwsac_submissions(sub)
 
         options = %{
           overlay: Wwsac.overlay_options(),
@@ -21,9 +21,9 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
          assign(socket,
            contest: contest,
            sub: sub,
+           other_subs_count: other_subs_count,
            changeset: changeset,
-           options: options,
-           wwsac_log: wwsac_log
+           options: options
          )}
 
       :error ->
@@ -43,6 +43,11 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
     {:noreply, save(socket, params)}
   end
 
+  def handle_event("cancel", _, socket) do
+    Wwsac.cancel_wwsac_submission(socket.assigns.sub)
+    {:noreply, redirect(socket, to: Routes.wwsac_submission_path(socket, :index))}
+  end
+
   defp update_changeset(socket, params) do
     changeset =
       socket.assigns.sub
@@ -58,7 +63,7 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
       |> Wwsac.prepare_wwsac_submission_changeset(params)
       |> Wwsac.submit_wwsac_submission_changeset()
 
-    case Wwsac.save_wwsac_submission(changeset) do
+    case Wwsac.submit_wwsac_submission(changeset) do
       {:ok, sub} ->
         assign(socket, sub: sub, changeset: changeset)
 
