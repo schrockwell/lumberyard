@@ -8,10 +8,24 @@ defmodule Lumber.Wwsac do
   alias Lumber.Schedule.Contest
   alias Lumber.Wwsac.Submission
 
-  def build_wwsac_submission do
-    case get_next_wwsac_contest() do
-      nil -> nil
-      contest -> Ecto.build_assoc(contest, :wwsac_submissions)
+  @spec build_wwsac_submission(Contest.t()) :: Submission.t()
+  def build_wwsac_submission(contest) do
+    Ecto.build_assoc(contest, :wwsac_submissions)
+  end
+
+  @spec get_next_wwsac_contest :: {:ok, Contest.t()} | :error
+  def get_next_wwsac_contest do
+    Repo.one(
+      from(c in Contest,
+        where: c.type == "WWSAC",
+        where: c.submissions_before >= ^DateTime.utc_now(),
+        order_by: c.submissions_before,
+        limit: 1
+      )
+    )
+    |> case do
+      nil -> :error
+      contest -> {:ok, contest}
     end
   end
 
@@ -37,17 +51,6 @@ defmodule Lumber.Wwsac do
       select: s.id
     )
     |> Repo.aggregate(:count)
-  end
-
-  def get_next_wwsac_contest do
-    Repo.one(
-      from(c in Contest,
-        where: c.type == "WWSAC",
-        where: c.submissions_before >= ^DateTime.utc_now(),
-        order_by: c.submissions_before,
-        limit: 1
-      )
-    )
   end
 
   def age_group_options do

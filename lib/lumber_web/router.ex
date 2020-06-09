@@ -21,8 +21,8 @@ defmodule LumberWeb.Router do
   scope "/wwsac", LumberWeb do
     pipe_through :browser
 
-    resources "/submit", WwsacSubmissionController
-    live "/submit/:id/prepare", PrepareWwsacSubmissionLive, :index
+    resources "/submit", WwsacSubmissionController, only: [:index, :create]
+    live "/submit/:id", PrepareWwsacSubmissionLive, :index
   end
 
   # Other scopes may use custom stacks.
