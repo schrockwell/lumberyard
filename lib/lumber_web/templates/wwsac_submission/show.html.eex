@@ -1,17 +1,13 @@
 <%= if @sub.completed_at do %>
-  <h1>Thanks for your submission!</h1>
-  <h2>May the odds be ever in your favor.</h2>
+  <div class="text-center my-8">
+    <h1 class="text-4xl text-gray-800 mb-4">Thanks for your submission!</h1>
+    <h2 class="text-2xl text-gray-600">May the odds be ever in your favor.</h2>
+  </div>
 <% else %>
 
 <div class="bg-gray-200 my-8">
   <div class="bg-gray-400 text-lg font-semibold px-4 py-2">Please Provide Log Details</div>
   <div class="p-4">
-    <%= if @other_subs_count > 0 do %>
-      <div class="text-red-800 bg-red-200 px-4 py-2 mb-4">
-        This upload will replace your previous submission.
-      </div>
-    <% end %>
-
     <div class="flex flex-wrap mb-8">
       <div class="flex-1 whitespace-no-wrap text-center">
         <div class="text-3xl font-semibold"><%= @sub.qso_count || 0 %></div>
@@ -34,8 +30,7 @@
       </div>
     </div>
 
-
-    <%= form_for @changeset, "#", [phx_change: "validate", phx_submit: "submit"], fn f -> %>
+    <%= form_for @changeset, Routes.wwsac_submission_path(@conn, :update, @changeset.data), fn f -> %>
       <fieldset class="mb-8">
         <label class="block uppercase tracking-wide text-xs font-bold mb-2" for="grid-first-name">
           Callsign
@@ -98,14 +93,14 @@
         </label>
       </fieldset>
 
-      <%= submit disabled: !@changeset.valid?, class: "btn bg-blue-600 text-white" do %>
-        Review Submission…
+      <%= submit class: "btn bg-blue-600 text-white hover:bg-blue-700" do %>
+         Submit Log
       <% end %>
 
       <span class="mx-4 text-gray-600 italic">or</span>
 
-      <button type="button" phx-click="cancel" class="btn border-2 border-gray-600 text-gray-600">
-        Cancel Submission
+      <button type="submit" name="cancel" value="true" class="btn border-2 border-gray-600 text-gray-600 hover:bg-gray-300">
+        Cancel
       </button>
     <% end %>
   <% end %>

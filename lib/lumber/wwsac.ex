@@ -13,13 +13,31 @@ defmodule Lumber.Wwsac do
     Ecto.build_assoc(contest, :wwsac_submissions)
   end
 
-  @spec get_next_wwsac_contest :: {:ok, Contest.t()} | :error
-  def get_next_wwsac_contest do
+  @spec get_current_contest :: {:ok, Contest.t()} | :error
+  def get_current_contest do
     Repo.one(
       from(c in Contest,
         where: c.type == "WWSAC",
+        where: c.starts_at <= ^DateTime.utc_now(),
         where: c.submissions_before >= ^DateTime.utc_now(),
-        order_by: c.submissions_before,
+        order_by: c.starts_at,
+        limit: 1
+      )
+    )
+    |> case do
+      nil -> :error
+      contest -> {:ok, contest}
+    end
+  end
+
+  @spec get_next_contest :: {:ok, Contest.t()} | :error
+  def get_next_contest do
+    Repo.one(
+      from(c in Contest,
+        where: c.type == "WWSAC",
+        where: c.starts_at >= ^DateTime.utc_now(),
+        where: c.submissions_before >= ^DateTime.utc_now(),
+        order_by: c.starts_at,
         limit: 1
       )
     )

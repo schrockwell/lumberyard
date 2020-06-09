@@ -3,12 +3,8 @@ defmodule LumberWeb.WwsacSubmissionController do
 
   alias Lumber.Wwsac
 
-  def index(conn, _params) do
-    render(conn)
-  end
-
   def create(conn, %{"submission" => %{"file" => file}}) do
-    case Wwsac.get_next_wwsac_contest() do
+    case Wwsac.get_current_contest() do
       {:ok, contest} ->
         Wwsac.build_wwsac_submission(contest)
         |> Wwsac.new_wwsac_submission_changeset(file.path)
@@ -16,7 +12,7 @@ defmodule LumberWeb.WwsacSubmissionController do
         |> Wwsac.save_wwsac_submission()
         |> case do
           {:ok, sub} ->
-            redirect(conn, to: Routes.prepare_wwsac_submission_path(conn, :index, sub.id))
+            redirect(conn, to: Routes.wwsac_submission_path(conn, :show, sub.id))
 
           {:error, changeset} ->
             conn
@@ -31,5 +27,63 @@ defmodule LumberWeb.WwsacSubmissionController do
 
   def create(conn, _) do
     redirect(conn, to: Routes.page_path(conn, :index))
+  end
+
+  def show(conn, %{"id" => id}) do
+    case Wwsac.get_wwsac_submission(id) do
+      {:ok, sub} ->
+        options = %{
+          overlay: Wwsac.overlay_options(),
+          age_group: Wwsac.age_group_options(),
+          power_level: Wwsac.power_level_options()
+        }
+
+        conn
+        |> assign(:sub, sub)
+        |> assign(:options, options)
+        |> assign(:changeset, Wwsac.prepare_wwsac_submission_changeset(sub))
+        |> render()
+
+      :error ->
+        redirect(conn, to: Routes.page_path(conn, :index))
+    end
+  end
+
+  def update(conn, %{"id" => id, "cancel" => "true"}) do
+    with {:ok, sub} <- Wwsac.get_wwsac_submission(id) do
+      Wwsac.cancel_wwsac_submission(sub)
+    end
+
+    redirect(conn, to: Routes.page_path(conn, :index))
+  end
+
+  def update(conn, %{"id" => id, "submission" => params}) do
+    with {:ok, sub} <- Wwsac.get_wwsac_submission(id) do
+      changeset =
+        sub
+        |> Wwsac.prepare_wwsac_submission_changeset(params)
+        |> Wwsac.submit_wwsac_submission_changeset()
+
+      case Wwsac.submit_wwsac_submission(changeset) do
+        {:ok, sub} ->
+          redirect(conn, to: Routes.wwsac_submission_path(conn, :show, sub.id))
+
+        {:error, changeset} ->
+          options = %{
+            overlay: Wwsac.overlay_options(),
+            age_group: Wwsac.age_group_options(),
+            power_level: Wwsac.power_level_options()
+          }
+
+          conn
+          |> assign(:sub, sub)
+          |> assign(:options, options)
+          |> assign(:changeset, changeset)
+          |> render(:show)
+      end
+    else
+      :error ->
+        redirect(conn, to: Routes.page_path(conn, :index))
+    end
   end
 end

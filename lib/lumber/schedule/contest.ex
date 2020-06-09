@@ -6,7 +6,8 @@ defmodule Lumber.Schedule.Contest do
   schema "contests" do
     has_many :wwsac_submissions, Lumber.Wwsac.Submission
 
-    field :started_at, :utc_datetime
+    field :starts_at, :utc_datetime
+    field :ends_at, :utc_datetime
     field :submissions_before, :utc_datetime
     field :title, :string
     field :type, :string
