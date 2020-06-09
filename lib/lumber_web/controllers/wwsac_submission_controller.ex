@@ -4,24 +4,7 @@ defmodule LumberWeb.WwsacSubmissionController do
   alias Lumber.Wwsac
 
   def index(conn, _params) do
-    case Wwsac.get_next_wwsac_contest() do
-      {:ok, contest} ->
-        sub = Wwsac.build_wwsac_submission(contest)
-
-        conn
-        |> assign(:contest, contest)
-        |> assign(
-          :changeset,
-          Wwsac.new_wwsac_submission_changeset(sub)
-        )
-        |> render()
-
-      :error ->
-        conn
-        |> assign(:contest, nil)
-        |> assign(:changeset, nil)
-        |> render()
-    end
+    render(conn)
   end
 
   def create(conn, %{"submission" => %{"file" => file}}) do
@@ -42,7 +25,11 @@ defmodule LumberWeb.WwsacSubmissionController do
         end
 
       :error ->
-        redirect(conn, to: Routes.wwsac_submission_path(conn, :index))
+        redirect(conn, to: Routes.page_path(conn, :index))
     end
+  end
+
+  def create(conn, _) do
+    redirect(conn, to: Routes.page_path(conn, :index))
   end
 end

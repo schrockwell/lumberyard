@@ -10,6 +10,19 @@
     <script defer phx-track-static type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
   </head>
   <body>
-    <%= @inner_content %>
+    <div class="bg-gray-800">
+      <div class="container mx-auto flex justify-between items-center text-gray-500">
+        <div class="text-lg font-semibold text-gray-300">Worldwide Sideband Activity Contest</div>
+        <div class="flex">
+          <a href="<%= Routes.wwsac_submission_path(@conn, :index) %>" class="block hover:text-white p-4">Submit Logs</a>
+          <a href="<%= Routes.wwsac_submission_path(@conn, :index) %>" class="block hover:text-white p-4">Schedule</a>
+          <a href="<%= Routes.wwsac_submission_path(@conn, :index) %>" class="block hover:text-white p-4">Standings</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container mx-auto">
+      <%= @inner_content %>
+    </div>
   </body>
 </html>

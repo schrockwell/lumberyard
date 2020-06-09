@@ -35,6 +35,14 @@
   * @import "components/forms";
   */
 
+.btn {
+  @apply rounded-lg px-5 py-3 font-semibold uppercase text-sm tracking-wide outline-none;
+}
+
+.btn:focus {
+  @apply outline-none;
+}
+
 /**
   * This injects all of Tailwind's utility classes, generated based on your
   * config file.

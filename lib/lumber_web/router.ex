@@ -16,6 +16,8 @@ defmodule LumberWeb.Router do
 
   scope "/", LumberWeb do
     pipe_through :browser
+
+    get "/", PageController, :index
   end
 
   scope "/wwsac", LumberWeb do

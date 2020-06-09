@@ -1,0 +1,17 @@
+<div class="bg-gray-200 my-8">
+    <div class="bg-gray-400 text-lg font-semibold px-4 py-2">Upload Your Log</div>
+    <div class="p-4">
+        <%= if @changeset do %>
+            <p class="mb-4">
+                Now accepting submissions for <%= @contest.title %> (<%= @contest.started_at %>) until <%= @contest.submissions_before %>
+            </p>
+
+            <%= form_for @changeset, Routes.wwsac_submission_path(@conn, :create), [multipart: true], fn f -> %>
+                <%= file_input f, :file %>
+                <%= submit "Continue", class: "btn bg-blue-600 text-white" %>
+            <% end  %>
+        <% else %>
+            Submissions are not being accepted for the next WWSAC.
+        <% end %>
+    </div>
+</div>
