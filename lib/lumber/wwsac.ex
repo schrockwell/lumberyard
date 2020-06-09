@@ -1,130 +1,169 @@
 defmodule Lumber.Wwsac do
+  alias Lumber.Repo
+  import Ecto.Changeset
+  import Ecto.Query
+
   alias Lumber.Logs
-  alias Lumber.Wwsac
-  alias HamRadio.ADIF
-  alias HamRadio.Cabrillo
+  alias Lumber.Schedule.Contest
+  alias Lumber.Wwsac.Submission
 
-  def get_wwsac_log(file_contents) do
-    case Logs.guess_format(file_contents) do
-      {:ok, :adif} ->
-        file_contents
-        |> ADIF.decode()
-        |> to_wwsac_log()
-        |> update_contact_scores()
-        |> update_log_scores()
-
-      {:ok, :cabrillo} ->
-        file_contents
-        |> Cabrillo.decode()
-        |> to_wwsac_log()
-        |> update_contact_scores()
-        |> update_log_scores()
-
-      _ ->
-        nil
+  def build_wwsac_submission do
+    case get_next_wwsac_contest() do
+      nil -> nil
+      contest -> Ecto.build_assoc(contest, :wwsac_submissions)
     end
   end
 
-  defp to_wwsac_log(%ADIF.Log{} = log) do
-    wwsac_contacts =
-      for adif_contact <- log.contacts do
-        %Wwsac.Contact{
-          khz: adif_contact.fields["FREQ"] * 1000,
-          datetime: adif_datetime(adif_contact),
-          callsign: adif_contact.fields["CALL"],
-          exchange_received: adif_contact.fields["SECTION"],
-          errors: adif_contact.errors,
-          prefix: nil,
-          points: 0,
-          multipliers: 0,
-          tags: []
-        }
-      end
-
-    %Wwsac.Log{
-      errors: log.errors,
-      contacts: wwsac_contacts
-    }
+  def get_wwsac_submission(id) do
+    Submission
+    |> Repo.get(id)
+    |> Repo.preload(:contest)
+    |> case do
+      nil -> :error
+      sub -> {:ok, sub}
+    end
   end
 
-  defp to_wwsac_log(%Cabrillo.Log{} = log) do
-    wwsac_contacts =
-      for cabrillo_contact <- log.contacts do
-        %Wwsac.Contact{
-          khz: cabrillo_contact.khz,
-          datetime: cabrillo_contact.datetime,
-          callsign: cabrillo_contact.callsign,
-          exchange_received: cabrillo_contact.exchange_received,
-          errors: cabrillo_contact.errors,
-          prefix: nil,
-          points: 0,
-          multipliers: 0,
-          tags: []
-        }
-      end
-
-    %Wwsac.Log{
-      errors: log.errors,
-      contacts: wwsac_contacts
-    }
+  def get_next_wwsac_contest do
+    Repo.one(
+      from(c in Contest,
+        where: c.type == "WWSAC",
+        where: c.started_at >= ^DateTime.utc_now(),
+        limit: 1
+      )
+    )
   end
 
-  defp adif_datetime(adif_contact) do
-    date = adif_contact.fields["QSO_DATE"]
-    time = adif_contact.fields["TIME_ON"]
-
-    date
-    |> Timex.to_datetime()
-    |> Timex.shift(hours: time.hour, minutes: time.minute, seconds: time.second)
+  def age_group_options do
+    [
+      {"Youth YL", "Youth YL"},
+      {"YL", "YL"},
+      {"Youth", "Youth"},
+      {"OM", "OM"}
+    ]
   end
 
-  defp update_contact_scores(wwsac_log) do
-    acc = %{
-      prefixes: MapSet.new(),
-      contacts: []
-    }
-
-    acc =
-      Enum.reduce(wwsac_log.contacts, acc, fn contact, acc ->
-        qso_points = exchange_points(contact.exchange_received)
-        prefix = callsign_prefix(contact.callsign)
-        mults = if MapSet.member?(acc.prefixes, prefix), do: 0, else: 1
-
-        contact = %{
-          contact
-          | points: qso_points,
-            multipliers: mults,
-            prefix: prefix
-        }
-
-        %{
-          prefixes: MapSet.put(acc.prefixes, prefix),
-          contacts: [contact | acc.contacts]
-        }
-      end)
-
-    %{wwsac_log | contacts: Enum.reverse(acc.contacts)}
+  def power_level_options do
+    [
+      {"QRP (5W max)", "QRP"},
+      {"Low Power (100W max)", "LP"},
+      {"High Power (1,500W max)", "HP"}
+    ]
   end
 
-  defp exchange_points("OM"), do: 1
-  defp exchange_points("YL"), do: 5
-  defp exchange_points("Y"), do: 10
-  defp exchange_points("YYL"), do: 15
-  defp exchange_points(_), do: 0
-
-  defp callsign_prefix(callsign) do
-    Wwsac.Prefixes.find(callsign)
+  def overlay_options do
+    [{"None", "None"}, {"Youth YL", "Youth YL"}, {"YL", "YL"}, {"Youth", "Youth"}]
   end
 
-  defp update_log_scores(wwsac_log) do
-    total_contact_points = wwsac_log.contacts |> Enum.map(& &1.points) |> Enum.sum()
-    total_prefixes = wwsac_log.contacts |> Enum.map(& &1.multipliers) |> Enum.sum()
+  def new_wwsac_submission_changeset(submission, path \\ nil)
 
-    %{
-      wwsac_log
-      | total_contact_points: total_contact_points,
-        total_prefixes: total_prefixes,
-        final_score: total_contact_points * total_prefixes
-    }
+  def new_wwsac_submission_changeset(submission, nil) do
+    submission
+    |> change()
+    |> add_error(:file, "is required")
+  end
+
+  def new_wwsac_submission_changeset(submission, path) do
+    stat = File.stat!(path)
+
+    if stat.size > 1_048_576 do
+      submission
+      |> change()
+      |> add_error(:file, "is larger than 1 MB")
+    else
+      submission
+      |> change(file_contents: File.read!(path))
+      |> validate_required([:file_contents, :contest_id])
+    end
+  end
+
+  def analyze_wwsac_submission_file_changeset(%{valid?: false} = changeset) do
+    changeset
+  end
+
+  def analyze_wwsac_submission_file_changeset(%{valid?: true} = changeset) do
+    contents = get_field(changeset, :file_contents)
+
+    case Logs.guess_format(contents) do
+      {:ok, :adif} ->
+        log = HamRadio.ADIF.decode(contents)
+
+        change(changeset,
+          qso_count: length(log.contacts),
+          callsign: guess_my_callsign(log)
+        )
+
+      {:ok, :cabrillo} ->
+        # TODO
+        changeset
+
+      :error ->
+        changeset
+    end
+  end
+
+  defp guess_my_callsign(%{contacts: [contact | _rest]} = _log) do
+    contact.fields["STATION_CALLSIGN"] || contact.fields["OPERATOR"]
+  end
+
+  defp guess_my_callsign(_), do: nil
+
+  def prepare_wwsac_submission_changeset(submission, params \\ %{}) do
+    submission
+    |> cast(params, [:callsign, :email, :age_group, :power_level, :overlay])
+    |> update_callsign(:callsign)
+    |> trim_field(:email)
+    |> validate_format(:email, ~r/@/, message: "is not a valid e-mail address")
+    |> validate_required([
+      :callsign,
+      :email,
+      :age_group,
+      :power_level,
+      :overlay,
+      :file_contents,
+      :contest_id
+    ])
+    |> validate_inclusion(:age_group, Enum.map(age_group_options(), &elem(&1, 1)))
+    |> validate_inclusion(:power_level, Enum.map(power_level_options(), &elem(&1, 1)))
+    |> validate_inclusion(:overlay, Enum.map(overlay_options(), &elem(&1, 1)))
+  end
+
+  def submit_wwsac_submission_changeset(submission) do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+    submission |> change(completed_at: now)
+  end
+
+  defp update_callsign(changeset, field) do
+    changeset
+    |> get_change(field)
+    |> case do
+      string when is_binary(string) ->
+        put_change(changeset, field, normalize_callsign(string))
+
+      _ ->
+        changeset
+    end
+  end
+
+  defp normalize_callsign(callsign) do
+    callsign |> String.trim() |> String.upcase()
+  end
+
+  defp trim_field(changeset, field) do
+    case get_change(changeset, field) do
+      string when is_binary(string) ->
+        put_change(changeset, field, String.trim(string))
+
+      _ ->
+        changeset
+    end
+  end
+
+  def save_wwsac_submission(changeset) do
+    Repo.insert_or_update(changeset)
+  end
+
+  def guess_submission_format(sub) do
+    Logs.guess_format(sub.file_contents)
   end
 end

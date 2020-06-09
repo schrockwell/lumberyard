@@ -1,21 +1,20 @@
 defmodule LumberWeb.PrepareWwsacSubmissionLive do
   use LumberWeb, :live_view
 
-  alias Lumber.Contests
   alias Lumber.Wwsac
 
   @impl true
   def mount(%{"id" => id}, _session, socket) do
-    case Contests.get_wwsac_submission(id) do
+    case Wwsac.get_wwsac_submission(id) do
       {:ok, sub} ->
         contest = sub.contest
-        changeset = Contests.prepare_wwsac_submission_changeset(sub)
-        wwsac_log = Wwsac.get_wwsac_log(sub.file_contents)
+        changeset = Wwsac.prepare_wwsac_submission_changeset(sub)
+        wwsac_log = Wwsac.Log.from_file_contents(sub.file_contents)
 
         options = %{
-          overlay: Contests.overlay_options(),
-          age_group: Contests.age_group_options(),
-          power_level: Contests.power_level_options()
+          overlay: Wwsac.overlay_options(),
+          age_group: Wwsac.age_group_options(),
+          power_level: Wwsac.power_level_options()
         }
 
         {:ok,
@@ -34,12 +33,12 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
   end
 
   @impl true
-  def handle_event("validate", %{"wwsac_submission" => params}, socket) do
+  def handle_event("validate", %{"submission" => params}, socket) do
     # IO.inspect(params, label: "validate")
     {:noreply, update_changeset(socket, params)}
   end
 
-  def handle_event("submit", %{"wwsac_submission" => params}, socket) do
+  def handle_event("submit", %{"submission" => params}, socket) do
     # IO.inspect(params, label: "submit")
     {:noreply, save(socket, params)}
   end
@@ -47,7 +46,7 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
   defp update_changeset(socket, params) do
     changeset =
       socket.assigns.sub
-      |> Contests.prepare_wwsac_submission_changeset(params)
+      |> Wwsac.prepare_wwsac_submission_changeset(params)
       |> Map.put(:action, :create)
 
     assign(socket, changeset: changeset)
@@ -56,10 +55,10 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
   defp save(socket, params) do
     changeset =
       socket.assigns.sub
-      |> Contests.prepare_wwsac_submission_changeset(params)
-      |> Contests.submit_wwsac_submission_changeset()
+      |> Wwsac.prepare_wwsac_submission_changeset(params)
+      |> Wwsac.submit_wwsac_submission_changeset()
 
-    case Contests.save_wwsac_submission(changeset) do
+    case Wwsac.save_wwsac_submission(changeset) do
       {:ok, sub} ->
         assign(socket, sub: sub, changeset: changeset)
 
@@ -69,7 +68,7 @@ defmodule LumberWeb.PrepareWwsacSubmissionLive do
   end
 
   defp file_format(sub) do
-    case Contests.guess_submission_format(sub) do
+    case Wwsac.guess_submission_format(sub) do
       {:ok, :cabrillo} -> "Cabrillo"
       {:ok, :adif} -> "ADIF"
       :error -> "Unknown"

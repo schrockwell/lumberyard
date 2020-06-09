@@ -11,7 +11,7 @@
 # and so on) as they will fail if something goes wrong.
 
 alias Lumber.Repo
-alias Lumber.Contests.Contest
+alias Lumber.Schedule.Contest
 
 # May 12, 2020 at 1Z
 {:ok, start_date, 0} = DateTime.from_iso8601("2020-05-12T01:00:00Z")
