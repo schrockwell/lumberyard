@@ -10,22 +10,22 @@
   <div class="p-4">
     <div class="flex flex-wrap mb-8">
       <div class="flex-1 whitespace-no-wrap text-center">
-        <div class="text-3xl font-semibold"><%= @sub.qso_count || 0 %></div>
+        <div class="text-3xl font-semibold"><%= delimit(@sub.qso_count || 0) %></div>
         <div class="text-gray-600">QSOs</div>
       </div>
 
       <div class="flex-1 whitespace-no-wrap text-center">
-        <div class="text-3xl font-semibold"><%= @sub.qso_points || 0 %></div>
+        <div class="text-3xl font-semibold"><%= delimit(@sub.qso_points || 0) %></div>
         <div class="text-gray-600">QSO Points</div>
       </div>
 
       <div class="flex-1 whitespace-no-wrap text-center">
-        <div class="text-3xl font-semibold"><%= @sub.prefix_count || 0 %></div>
+        <div class="text-3xl font-semibold"><%= delimit(@sub.prefix_count || 0) %></div>
         <div class="text-gray-600">Prefixes</div>
       </div>
 
       <div class="flex-1 whitespace-no-wrap text-center">
-        <div class="text-3xl font-semibold"><%= @sub.final_score || 0 %></div>
+        <div class="text-3xl font-semibold"><%= delimit(@sub.final_score || 0) %></div>
         <div class="text-gray-600">Final Score</div>
       </div>
     </div>
@@ -66,19 +66,6 @@
         </label>
         <div class="inline-block relative">
           <%= select f, :power_level, @options.power_level, class: "block appearance-none w-full bg-white border border-gray-300 focus:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none" %>
-
-          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
-          </div>
-        </div>
-      </fieldset>
-
-      <fieldset class="mb-8">
-        <label class="block uppercase tracking-wide text-xs font-bold mb-2" for="grid-first-name">
-          Overlay
-        </label>
-        <div class="inline-block relative">
-          <%= select f, :overlay, @options.overlay, class: "block appearance-none w-full bg-white border border-gray-300 focus:border-gray-500 px-4 py-2 pr-8 rounded leading-tight focus:outline-none" %>
 
           <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
             <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>

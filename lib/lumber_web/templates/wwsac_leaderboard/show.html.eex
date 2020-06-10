@@ -1,0 +1,8 @@
+<div class="flex justify-between items-center my-4">
+    <h1 class="text-2xl font-semibold "><%= @year %> Leaderboard</h1>
+    <!-- todo: year picker -->
+</div>
+
+<div class="flex flex-wrap -mx-2">
+    <%= render_many @leaderboards, LumberWeb.WwsacLeaderboardView, "_leaderboard.html" %>
+</div>

@@ -73,10 +73,10 @@ defmodule Lumber.Wwsac do
 
   def age_group_options do
     [
-      {"Youth YL", "Youth YL"},
-      {"YL", "YL"},
-      {"Youth", "Youth"},
-      {"OM", "OM"}
+      {"Youth YL (26 and under)", "YYL"},
+      {"YL (over 26)", "YL"},
+      {"Youth (26 and under)", "Y"},
+      {"OM (over 26)", "OM"}
     ]
   end
 
@@ -86,10 +86,6 @@ defmodule Lumber.Wwsac do
       {"Low Power (100W max)", "LP"},
       {"High Power (1,500W max)", "HP"}
     ]
-  end
-
-  def overlay_options do
-    [{"None", "None"}, {"Youth YL", "Youth YL"}, {"YL", "YL"}, {"Youth", "Youth"}]
   end
 
   def new_wwsac_submission_changeset(submission, path \\ nil)
@@ -145,7 +141,7 @@ defmodule Lumber.Wwsac do
 
   def prepare_wwsac_submission_changeset(submission, params \\ %{}) do
     submission
-    |> cast(params, [:callsign, :email, :age_group, :power_level, :overlay])
+    |> cast(params, [:callsign, :email, :age_group, :power_level])
     |> update_callsign(:callsign)
     |> trim_field(:email)
     |> validate_format(:email, ~r/@/, message: "is not a valid e-mail address")
@@ -154,13 +150,11 @@ defmodule Lumber.Wwsac do
       :email,
       :age_group,
       :power_level,
-      :overlay,
       :file_contents,
       :contest_id
     ])
     |> validate_inclusion(:age_group, option_values(age_group_options()))
     |> validate_inclusion(:power_level, option_values(power_level_options()))
-    |> validate_inclusion(:overlay, option_values(overlay_options()))
   end
 
   def submit_wwsac_submission_changeset(submission) do

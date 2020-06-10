@@ -33,7 +33,6 @@ defmodule LumberWeb.WwsacSubmissionController do
     case Wwsac.get_wwsac_submission(id) do
       {:ok, sub} ->
         options = %{
-          overlay: Wwsac.overlay_options(),
           age_group: Wwsac.age_group_options(),
           power_level: Wwsac.power_level_options()
         }
@@ -70,7 +69,6 @@ defmodule LumberWeb.WwsacSubmissionController do
 
         {:error, changeset} ->
           options = %{
-            overlay: Wwsac.overlay_options(),
             age_group: Wwsac.age_group_options(),
             power_level: Wwsac.power_level_options()
           }

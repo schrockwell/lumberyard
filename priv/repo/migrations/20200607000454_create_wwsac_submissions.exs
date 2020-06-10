@@ -9,12 +9,12 @@ defmodule Lumber.Repo.Migrations.CreateWwsacSubmissions do
       add :email, :string
       add :age_group, :string
       add :power_level, :string
-      add :overlay, :string
       add :qso_count, :integer
       add :qso_points, :integer
       add :prefix_count, :integer
       add :final_score, :integer
       add :completed_at, :utc_datetime
+      add :rejected_at, :utc_datetime
       add :send_notifications, :boolean, null: false, default: false
       add :contest_id, references(:contests, on_delete: :nothing, type: :binary_id)
 

@@ -24,6 +24,8 @@ defmodule LumberWeb.Router do
     pipe_through :browser
 
     resources "/submit", WwsacSubmissionController, only: [:create, :show, :update]
+    resources "/results", WwsacResultController, only: [:index, :show]
+    resources "/leaderboard", WwsacLeaderboardController, only: [:index, :show]
   end
 
   # Other scopes may use custom stacks.

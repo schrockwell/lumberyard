@@ -10,13 +10,13 @@ defmodule Lumber.Wwsac.Submission do
     field :age_group, :string
     field :callsign, :string
     field :email, :string
-    field :overlay, :string
     field :power_level, :string
     field :send_notifications, :boolean
     field :file_contents, :string
 
     # Submission flow
     field :completed_at, :utc_datetime
+    field :rejected_at, :utc_datetime
 
     # Scoring
     field :prefix_count, :integer
