@@ -85,7 +85,7 @@ defmodule Lumber.Wwsac do
     end
   end
 
-  defp put_wwsac_log(sub) do
+  def put_wwsac_log(sub) do
     %{sub | wwsac_log: Wwsac.Log.from_file_contents(sub.file_contents)}
   end
 
@@ -211,7 +211,7 @@ defmodule Lumber.Wwsac do
 
   def prepare_wwsac_submission_changeset(submission, params \\ %{}) do
     submission
-    |> cast(params, [:callsign, :email, :age_group, :power_level])
+    |> cast(params, [:callsign, :email, :age_group, :power_level, :send_notifications])
     |> update_callsign(:callsign)
     |> trim_field(:email)
     |> validate_format(:email, ~r/@/, message: "is not a valid e-mail address")

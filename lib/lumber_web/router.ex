@@ -1,5 +1,6 @@
 defmodule LumberWeb.Router do
   use LumberWeb, :router
+  import LumberWeb.Plugs
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -15,10 +16,17 @@ defmodule LumberWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :admins_only do
+    plug :ensure_admin_role
+  end
+
   scope "/", LumberWeb do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    get "/logout", LoginController, :delete, as: :login
+    resources "/login", LoginController, singleton: true
   end
 
   scope "/wwsac", LumberWeb do
@@ -27,6 +35,15 @@ defmodule LumberWeb.Router do
     resources "/submit", WwsacSubmissionController, only: [:create, :show, :update]
     resources "/contests", WwsacContestController, only: [:index, :show]
     resources "/leaderboard", WwsacLeaderboardController, only: [:index, :show]
+  end
+
+  scope "/admin", LumberWeb.Admin, as: :admin do
+    pipe_through [:browser, :admins_only]
+
+    resources "/contests", WwsacContestController
+    resources "/submissions", WwsacSubmissionController
+    post "/submissions/:id/reject", WwsacSubmissionController, :reject
+    post "/submissions/:id/unreject", WwsacSubmissionController, :unreject
   end
 
   # Other scopes may use custom stacks.
@@ -48,9 +65,5 @@ defmodule LumberWeb.Router do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: LumberWeb.Telemetry
     end
-  end
-
-  defp put_my_callsign(conn, _) do
-    assign(conn, :my_callsign, get_session(conn, :my_callsign))
   end
 end

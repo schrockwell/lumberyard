@@ -35,12 +35,24 @@
   * @import "components/forms";
   */
 
+.link {
+  @apply text-blue-500 underline;
+}
+
 .btn {
-  @apply rounded-lg px-5 py-3 font-semibold uppercase text-sm tracking-wide outline-none;
+  @apply rounded-lg px-5 py-3 font-semibold uppercase text-sm tracking-wide outline-none cursor-pointer;
 }
 
 .btn:focus {
   @apply outline-none;
+}
+
+.input {
+  @apply inline-block border-2 border-transparent bg-white rounded-lg px-4 py-2;
+}
+
+.input:focus {
+  @apply outline-none border-blue-500;
 }
 
 .select {
@@ -49,6 +61,16 @@
 
 .select:focus {
   @apply outline-none border-blue-500;
+}
+
+.table {
+  thead {
+    @apply border-b;
+  }
+
+  td, th {
+    @apply py-1;
+  }
 }
 
 /**

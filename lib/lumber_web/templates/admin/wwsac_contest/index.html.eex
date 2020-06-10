@@ -1,0 +1,19 @@
+<h1 class="text-2xl font-semibold my-4">Manage Submissions</h1>
+
+<table class="table w-full">
+  <thead>
+    <tr>
+      <th class="text-left">Date</th>
+      <th class="text-left">Contest</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <%= for contest <- @contests do %>
+      <tr class="hover:bg-gray-200">
+        <td class="pr-4"><%= long_date(contest.starts_at) %></td>
+        <td><%= link contest.title, to: Routes.admin_wwsac_contest_path(@conn, :show, contest.id), class: "link" %></td>
+      </tr>
+    <% end %>
+</table>

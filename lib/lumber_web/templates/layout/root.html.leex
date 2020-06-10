@@ -30,6 +30,20 @@
       </div>
     </div>
 
+    <%= if LumberWeb.Authentication.role(@conn) == :admin do %>
+    <div class="bg-gray-700 text-sm">
+      <div class="container mx-auto flex justify-between items-center text-gray-500">
+        <div class="flex -ml-4">
+          <a href="<%= Routes.admin_wwsac_contest_path(@conn, :index) %>" class="block hover:text-white px-4 py-2">Submissions</a>
+        </div>
+        <div>
+          <a href="<%= Routes.login_path(@conn, :delete) %>" class="block hover:text-white px-4 py-2">Log Out</a>
+        </div>
+      </div>
+    </div>
+
+    <% end %>
+
     <div class="container mx-auto">
       <%= @inner_content %>
     </div>

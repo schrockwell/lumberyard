@@ -1,0 +1,41 @@
+<div class="flex items-center justify-between mt-4 mb-8">
+  <h1 class="text-2xl font-semibold">Manage Submissions - <%= @sub.contest.title %> - <%= @sub.callsign %></h1>
+
+  <%= unless @sub.rejected_at do %>
+    <%= button "Disqualify", to: Routes.admin_wwsac_submission_path(@conn, :reject, @sub.id), class: "btn py-2 border-red-600 border-2 text-red-600 hover:bg-red-100" %>
+  <% end %>
+</div>
+
+<%= if @sub.rejected_at do %>
+  <div class="bg-red-600 text-white px-6 py-3 my-8 flex justify-between items-center">
+    <div>⚠  This log has been disqualified.</div>
+    <%= button "Undo", to: Routes.admin_wwsac_submission_path(@conn, :unreject, @sub.id), class: "btn py-2 border-white border-2 text-white hover:bg-red-500" %>
+  </div>
+<% end %>
+
+<table class="table font-mono w-full text-sm">
+  <thead>
+    <tr>
+      <th class="text-left">UTC</th>
+      <th class="text-left">Callsign</th>
+      <th class="text-left">Sent</th>
+      <th class="text-left">Rcvd</th>
+      <th class="text-left">Prefix</th>
+      <th class="text-left">Points</th>
+      <th class="text-left">Mult?</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%= for contact <- @sub.wwsac_log.contacts do %>
+      <tr class="hover:bg-gray-200">
+        <td><%= contact.datetime %></td>
+        <td><%= contact.callsign %></td>
+        <td><%= contact.exchange_sent || "--" %></td>
+        <td><%= contact.exchange_received %></td>
+        <td><%= contact.prefix || "--" %></td>
+        <td><%= contact.points %></td>
+        <td><%= if contact.multipliers == 1, do: "Mult" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
