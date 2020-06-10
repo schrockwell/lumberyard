@@ -13,11 +13,11 @@
                     <thead>
                         <tr>
                             <th class="text-left">#</th>
-                            <th class="text-left">Operator</th>
+                            <th class="text-left">Op</th>
                             <th class="text-right">QSOs</th>
-                            <th class="text-right">Points</th>
-                            <th class="text-right">Prefixes</th>
-                            <th class="text-right">Total</th>
+                            <th class="text-right">Pts</th>
+                            <th class="text-right">Pfx</th>
+                            <th class="text-right">Score</th>
                         </tr>
                     </thead>
 

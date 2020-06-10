@@ -18,6 +18,7 @@ defmodule LumberWeb.WwsacContestController do
 
     conn
     |> assign(:contest, contest)
+    |> assign(:page_title, Lumber.Format.long_date(contest.starts_at))
     |> assign(:results, WwsacResults.get_contest_results(contest))
     |> assign(:previous, Wwsac.get_previous_contests())
     |> render(:show)

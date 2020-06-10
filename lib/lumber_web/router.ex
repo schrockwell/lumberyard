@@ -51,6 +51,6 @@ defmodule LumberWeb.Router do
   end
 
   defp put_my_callsign(conn, _) do
-    assign(conn, :my_callsign, get_session(conn, :my_callsign)) |> IO.inspect()
+    assign(conn, :my_callsign, get_session(conn, :my_callsign))
   end
 end

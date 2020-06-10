@@ -17,6 +17,7 @@ defmodule LumberWeb.WwsacSubmissionController do
           {:error, changeset} ->
             conn
             |> assign(:changeset, changeset)
+            |> assign(:page_title, "Log Submission")
             |> render(:index)
         end
 
@@ -39,6 +40,7 @@ defmodule LumberWeb.WwsacSubmissionController do
 
         conn
         |> assign(:sub, sub)
+        |> assign(:page_title, "Log Submission")
         |> assign(:options, options)
         |> assign(:changeset, Wwsac.prepare_wwsac_submission_changeset(sub))
         |> render()
@@ -79,6 +81,7 @@ defmodule LumberWeb.WwsacSubmissionController do
           |> assign(:sub, sub)
           |> assign(:options, options)
           |> assign(:changeset, changeset)
+          |> assign(:page_title, "Log Submission")
           |> render(:show)
       end
     else

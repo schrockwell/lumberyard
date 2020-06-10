@@ -11,6 +11,7 @@ defmodule LumberWeb.PageController do
         sub = Wwsac.build_wwsac_submission(contest)
 
         conn
+        |> assign(:page_title, "Home")
         |> assign(:contest, contest)
         |> assign(
           :changeset,

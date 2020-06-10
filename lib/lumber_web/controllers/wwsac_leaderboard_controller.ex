@@ -15,6 +15,7 @@ defmodule LumberWeb.WwsacLeaderboardController do
 
     conn
     |> assign(:leaderboards, WwsacResults.get_year_leaderboards(year))
+    |> assign(:page_title, "#{year} Leaderboard")
     |> assign(:years, WwsacResults.all_years())
     |> assign(:year, year)
     |> render(:show)
