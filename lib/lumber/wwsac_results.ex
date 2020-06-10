@@ -28,12 +28,16 @@ defmodule Lumber.WwsacResults do
     ]
   end
 
-  def get_all_leaderboards(year) do
+  #
+  # CONTEST LEADERBOARDS
+  #
+
+  def get_contest_results(contest) do
     all_categories()
     |> Task.async_stream(fn category ->
       %{
         category: category,
-        operators: get_leaderboard(category, year)
+        operators: get_contest_category_result(contest, category)
       }
     end)
     |> Stream.filter(&match?({:ok, _}, &1))
@@ -41,7 +45,42 @@ defmodule Lumber.WwsacResults do
     |> Enum.sort_by(& &1.category.index)
   end
 
-  def get_leaderboard(category, year) do
+  def get_contest_category_result(contest, category) do
+    from(s in Submission,
+      where: s.contest_id == ^contest.id,
+      where: s.age_group == ^category.age_group and s.power_level == ^category.power_level,
+      where: is_nil(s.rejected_at),
+      where: not is_nil(s.completed_at),
+      select: %{
+        callsign: s.callsign,
+        prefix_count: s.prefix_count,
+        qso_count: s.qso_count,
+        qso_points: s.qso_points,
+        final_score: s.final_score
+      }
+    )
+    |> Repo.all()
+    |> Enum.sort_by(& &1.final_score, &>=/2)
+  end
+
+  #
+  # YEAR LEADERBOARDS
+  #
+
+  def get_year_leaderboards(year) do
+    all_categories()
+    |> Task.async_stream(fn category ->
+      %{
+        category: category,
+        operators: get_year_category_leaderboard(year, category)
+      }
+    end)
+    |> Stream.filter(&match?({:ok, _}, &1))
+    |> Stream.map(&elem(&1, 1))
+    |> Enum.sort_by(& &1.category.index)
+  end
+
+  def get_year_category_leaderboard(year, category) do
     beginning_of_year =
       year |> Timex.beginning_of_year() |> Timex.to_datetime() |> Timex.beginning_of_day()
 

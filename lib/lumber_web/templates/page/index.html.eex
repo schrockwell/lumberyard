@@ -3,7 +3,7 @@
     <div class="p-4">
         <%= if @changeset do %>
             <p class="mb-4">
-                Now accepting submissions for <%= @contest.title %> (<%= @contest.starts_at %>).
+                Now accepting submissions for <%= @contest.title %> on <%= long_date(@contest.starts_at) %>.
             </p>
 
             <%= form_for @changeset, Routes.wwsac_submission_path(@conn, :create), [multipart: true], fn f -> %>

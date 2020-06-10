@@ -14,4 +14,8 @@ defmodule Lumber.Format do
     |> Enum.reverse()
     |> Enum.join(",")
   end
+
+  def long_date(datetime) do
+    Timex.format!(datetime, "{Mfull} {D}, {YYYY}")
+  end
 end

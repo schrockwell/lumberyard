@@ -1,0 +1,38 @@
+<div class="px-2 w-full md:w-1/2 lg:w-1/3 mb-8">
+    <div class="bg-gray-200">
+        <div class="font-semibold px-4 py-2 bg-gray-400">
+            <%= @wwsac_contest.category.title %>
+        </div>
+
+        <div class="px-4 py-2">
+            <%= if @wwsac_contest.operators == [] do %>
+                <span class="italic text-gray-600">No entries yet</span>
+            <% else %>
+
+                <table class="w-full">
+                    <thead>
+                        <tr>
+                            <th class="text-left">#</th>
+                            <th class="text-left">Operator</th>
+                            <th class="text-right">QSOs</th>
+                            <th class="text-right">Points</th>
+                            <th class="text-right">Prefixes</th>
+                            <th class="text-right">Total</th>
+                        </tr>
+                    </thead>
+
+                    <%= for {operator, place} <- Enum.with_index(@wwsac_contest.operators, 1) do %>
+                        <tr>
+                            <td class="pr-2"><%= place %>.</td>
+                            <td class="font-mono text-sm pt-1"><%= operator.callsign %></td>
+                            <td class="text-right"><%= delimit(operator.qso_count) %></td>
+                            <td class="text-right"><%= delimit(operator.qso_points) %></td>
+                            <td class="text-right"><%= delimit(operator.prefix_count) %></td>
+                            <td class="text-right"><%= delimit(operator.final_score) %></td>
+                        </tr>
+                    <% end %>
+                </table>
+            <% end %>
+        </div>
+    </div>
+</div>

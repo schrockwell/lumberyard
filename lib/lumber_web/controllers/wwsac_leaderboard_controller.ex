@@ -14,7 +14,7 @@ defmodule LumberWeb.WwsacLeaderboardController do
       |> String.to_integer()
 
     conn
-    |> assign(:leaderboards, WwsacResults.get_all_leaderboards(year))
+    |> assign(:leaderboards, WwsacResults.get_year_leaderboards(year))
     |> assign(:year, year)
     |> render(:show)
   end
