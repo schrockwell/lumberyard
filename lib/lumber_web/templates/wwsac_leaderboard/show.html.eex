@@ -1,8 +1,25 @@
 <div class="flex justify-between items-center my-4">
     <h1 class="text-2xl font-semibold "><%= @year %> Leaderboard</h1>
-    <!-- todo: year picker -->
+    <div>
+        <%= if length(@years) > 1 do %>
+            <select class="select" id="year-select">
+                <%= for year <- @years do %>
+                    <option
+                        value="<%= Routes.wwsac_leaderboard_path(@conn, :show, year) %>"
+                        <%= if year == @year, do: "selected" %>
+                    ><%= year %></option>
+                <% end %>
+            </select>
+        <% end %>
+    </div>
 </div>
 
 <div class="flex flex-wrap -mx-2">
-    <%= render_many @leaderboards, LumberWeb.WwsacLeaderboardView, "_leaderboard.html" %>
+    <%= render_many @leaderboards, LumberWeb.WwsacLeaderboardView, "_leaderboard.html", my_callsign: @my_callsign  %>
 </div>
+
+<script>
+    document.getElementById('year-select').addEventListener('change', function(event) {
+        window.location = event.target.value;
+    });
+</script>

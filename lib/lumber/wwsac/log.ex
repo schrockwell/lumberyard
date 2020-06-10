@@ -3,7 +3,8 @@ defmodule Lumber.Wwsac.Log do
             contacts: [],
             total_contact_points: 0,
             total_prefixes: 0,
-            final_score: 0
+            final_score: 0,
+            source: nil
 
   alias HamRadio.ADIF
   alias HamRadio.Cabrillo
@@ -40,7 +41,8 @@ defmodule Lumber.Wwsac.Log do
           datetime: adif_datetime(adif_contact),
           callsign: adif_contact.fields["CALL"],
           my_callsign: adif_contact.fields["STATION_CALLSIGN"] || adif_contact.fields["OPERATOR"],
-          exchange_received: adif_contact.fields["SECTION"],
+          exchange_received:
+            adif_contact.fields["APP_N1MM_EXCHANGE1"] || adif_contact.fields["SECTION"],
           errors: adif_contact.errors,
           prefix: nil,
           points: 0,
@@ -51,7 +53,8 @@ defmodule Lumber.Wwsac.Log do
 
     %Wwsac.Log{
       errors: log.errors,
-      contacts: wwsac_contacts
+      contacts: wwsac_contacts,
+      source: log
     }
   end
 
@@ -63,6 +66,7 @@ defmodule Lumber.Wwsac.Log do
           datetime: cabrillo_contact.datetime,
           callsign: cabrillo_contact.callsign,
           my_callsign: cabrillo_contact.my_callsign,
+          exchange_sent: cabrillo_contact.exchange_sent,
           exchange_received: cabrillo_contact.exchange_received,
           errors: cabrillo_contact.errors,
           prefix: nil,
@@ -74,7 +78,8 @@ defmodule Lumber.Wwsac.Log do
 
     %Wwsac.Log{
       errors: log.errors,
-      contacts: wwsac_contacts
+      contacts: wwsac_contacts,
+      source: log
     }
   end
 

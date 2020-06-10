@@ -21,7 +21,7 @@ contests =
   Enum.map(0..259, fn week ->
     starts_at = Timex.shift(start_date, weeks: week)
     ends_at = Timex.shift(starts_at, hours: 1)
-    submissions_before = Timex.shift(starts_at, days: 1)
+    submissions_before = Timex.shift(ends_at, days: 1)
 
     Repo.insert!(%Contest{
       title: "WWSAC \##{week + 1}",

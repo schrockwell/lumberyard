@@ -3,6 +3,7 @@ defmodule Lumber.Wwsac.Contact do
             datetime: nil,
             callsign: nil,
             my_callsign: nil,
+            exchange_sent: nil,
             exchange_received: nil,
             prefix: nil,
             points: 0,

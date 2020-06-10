@@ -21,7 +21,11 @@
                     </thead>
 
                     <%= for {operator, place} <- Enum.with_index(@wwsac_leaderboard.operators, 1) do %>
-                        <tr>
+                        <tr
+                            <%= if @my_callsign == operator.callsign do %>
+                                class="bg-yellow-200"
+                            <% end %>
+                        >
                             <td class="pr-2"><%= place %>.</td>
                             <td class="font-mono text-sm pt-1"><%= operator.callsign %></td>
                             <td class="text-right"><%= delimit(operator.count) %></td>

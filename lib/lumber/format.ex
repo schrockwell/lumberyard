@@ -18,4 +18,12 @@ defmodule Lumber.Format do
   def long_date(datetime) do
     Timex.format!(datetime, "{Mfull} {D}, {YYYY}")
   end
+
+  def wwsac_submission_before(datetime) do
+    "#{long_date(datetime)} at #{utc_time(datetime)}Z"
+  end
+
+  def utc_time(datetime) do
+    Timex.format!(datetime, "{h24}{m}")
+  end
 end

@@ -8,6 +8,9 @@ defmodule Lumber.Wwsac do
   alias Lumber.Schedule.Contest
   alias Lumber.Wwsac.Submission
 
+  alias HamRadio.Cabrillo
+  alias HamRadio.ADIF
+
   @spec build_wwsac_submission(Contest.t()) :: Submission.t()
   def build_wwsac_submission(contest) do
     Ecto.build_assoc(contest, :wwsac_submissions)
@@ -63,6 +66,15 @@ defmodule Lumber.Wwsac do
     end
   end
 
+  def get_previous_contests do
+    from(c in Contest,
+      where: c.type == "WWSAC",
+      where: c.starts_at <= ^DateTime.utc_now(),
+      order_by: [desc: c.starts_at]
+    )
+    |> Repo.all()
+  end
+
   def get_wwsac_submission(id) do
     Submission
     |> Repo.get(id)
@@ -89,6 +101,7 @@ defmodule Lumber.Wwsac do
 
   def age_group_options do
     [
+      {"Please select...", ""},
       {"Youth YL (26 and under)", "YYL"},
       {"YL (over 26)", "YL"},
       {"Youth (26 and under)", "Y"},
@@ -98,6 +111,7 @@ defmodule Lumber.Wwsac do
 
   def power_level_options do
     [
+      {"Please select...", ""},
       {"QRP (5W max)", "QRP"},
       {"Low Power (100W max)", "LP"},
       {"High Power (1,500W max)", "HP"}
@@ -141,7 +155,10 @@ defmodule Lumber.Wwsac do
       qso_points: log.total_contact_points,
       prefix_count: log.total_prefixes,
       final_score: log.final_score,
-      callsign: guess_my_callsign(log)
+      callsign: guess_my_callsign(log),
+      power_level: guess_power_level(log),
+      age_group: guess_age_group(log),
+      email: guess_email(log)
     )
   end
 
@@ -150,6 +167,43 @@ defmodule Lumber.Wwsac do
   end
 
   defp guess_my_callsign(_), do: nil
+
+  # Cabrillo v3
+  defp guess_power_level(%{source: %Cabrillo.Log{header_fields: %{"CATEGORY-POWER" => "HIGH"}}}),
+    do: "HP"
+
+  defp guess_power_level(%{source: %Cabrillo.Log{header_fields: %{"CATEGORY-POWER" => "LOW"}}}),
+    do: "LP"
+
+  defp guess_power_level(%{source: %Cabrillo.Log{header_fields: %{"CATEGORY-POWER" => "QRP"}}}),
+    do: "QRP"
+
+  # Cabrillo v2
+  defp guess_power_level(%{source: %Cabrillo.Log{header_fields: %{"CATEGORY" => category}}}) do
+    words = String.split(category, " ")
+
+    cond do
+      "HIGH" in words -> "HP"
+      "LOW" in words -> "LP"
+      "QRP" in words -> "QRP"
+      true -> nil
+    end
+  end
+
+  defp guess_power_level(_), do: nil
+
+  defp guess_age_group(%{contacts: [contact | _rest]} = _log) do
+    if contact.exchange_sent in ["OM", "YL", "Y", "YYL"] do
+      contact.exchange_sent
+    else
+      nil
+    end
+  end
+
+  defp guess_age_group(_), do: nil
+
+  defp guess_email(%{source: %Cabrillo.Log{header_fields: %{"EMAIL" => email}}}), do: email
+  defp guess_email(_), do: nil
 
   defp option_values(list) do
     Enum.map(list, &elem(&1, 1))

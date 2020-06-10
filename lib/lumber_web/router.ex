@@ -8,6 +8,7 @@ defmodule LumberWeb.Router do
     plug :put_root_layout, {LumberWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :put_my_callsign
   end
 
   pipeline :api do
@@ -47,5 +48,9 @@ defmodule LumberWeb.Router do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: LumberWeb.Telemetry
     end
+  end
+
+  defp put_my_callsign(conn, _) do
+    assign(conn, :my_callsign, get_session(conn, :my_callsign)) |> IO.inspect()
   end
 end

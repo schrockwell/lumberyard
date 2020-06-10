@@ -65,7 +65,9 @@ defmodule LumberWeb.WwsacSubmissionController do
 
       case Wwsac.submit_wwsac_submission(changeset) do
         {:ok, sub} ->
-          redirect(conn, to: Routes.wwsac_submission_path(conn, :show, sub.id))
+          conn
+          |> put_session(:my_callsign, sub.callsign)
+          |> redirect(to: Routes.wwsac_submission_path(conn, :show, sub.id))
 
         {:error, changeset} ->
           options = %{
