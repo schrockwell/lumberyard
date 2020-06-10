@@ -18,11 +18,18 @@ defmodule Lumber.WwsacAdmin do
 
   def get_contest_and_submissions(contest_id) do
     sub_preload =
-      from(s in Submission, where: not is_nil(s.completed_at), order_by: s.completed_at)
+      from(s in Submission,
+        where: not is_nil(s.completed_at),
+        order_by: s.completed_at
+      )
 
     Contest
     |> Repo.get(contest_id)
     |> Repo.preload(wwsac_submissions: sub_preload)
+  end
+
+  def get_contest(contest_id) do
+    Repo.get(Contest, contest_id)
   end
 
   def get_submission(id) do
@@ -44,5 +51,15 @@ defmodule Lumber.WwsacAdmin do
     |> Repo.get(id)
     |> change(rejected_at: nil)
     |> Repo.update!()
+  end
+
+  def get_contest_requested_emails(id) do
+    from(s in Submission,
+      where: s.contest_id == ^id,
+      where: not is_nil(s.completed_at),
+      where: s.send_notifications,
+      select: s.email
+    )
+    |> Repo.all()
   end
 end

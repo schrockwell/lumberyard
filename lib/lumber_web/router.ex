@@ -41,6 +41,8 @@ defmodule LumberWeb.Router do
     pipe_through [:browser, :admins_only]
 
     resources "/contests", WwsacContestController
+    get "/contests/:id/emails", WwsacContestController, :emails
+
     resources "/submissions", WwsacSubmissionController
     post "/submissions/:id/reject", WwsacSubmissionController, :reject
     post "/submissions/:id/unreject", WwsacSubmissionController, :unreject

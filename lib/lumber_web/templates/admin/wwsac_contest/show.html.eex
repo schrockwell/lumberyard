@@ -1,5 +1,11 @@
-<h1 class="text-2xl font-semibold mt-4">Manage Submissions - <%= @contest.title %></h1>
-<h2 class="text-xl text-gray-600 mb-4"><%= long_date(@contest.starts_at) %></h2>
+<div class="flex justify-between items-center my-4">
+  <div>
+    <h1 class="text-2xl font-semibold">Manage Submissions - <%= @contest.title %></h1>
+    <h2 class="text-xl text-gray-600"><%= long_date(@contest.starts_at) %></h2>
+  </div>
+
+  <%= link "Download E-mails", to: Routes.admin_wwsac_contest_path(@conn, :emails, @contest.id), class: "btn border-2 border-gray-600 text-gray-600" %>
+</div>
 
 <table class="table w-full">
   <thead>
