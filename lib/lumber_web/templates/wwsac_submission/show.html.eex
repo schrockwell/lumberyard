@@ -31,6 +31,8 @@
     </div>
 
     <%= form_for @changeset, Routes.wwsac_submission_path(@conn, :update, @changeset.data), fn f -> %>
+      <input type="hidden" name="redirect" value="<%= @redirect %>">
+
       <fieldset class="mb-8">
         <label class="block uppercase tracking-wide text-xs font-bold mb-2" for="grid-first-name">
           Callsign

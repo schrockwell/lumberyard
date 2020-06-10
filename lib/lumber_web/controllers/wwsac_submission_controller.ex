@@ -3,16 +3,30 @@ defmodule LumberWeb.WwsacSubmissionController do
 
   alias Lumber.Wwsac
 
-  def create(conn, %{"submission" => %{"file" => file}}) do
-    case Wwsac.get_current_contest() do
-      {:ok, contest} ->
+  def create(conn, %{"submission" => %{"file" => file} = sub_params} = params) do
+    contest =
+      if sub_params["contest_id"] && LumberWeb.Authentication.role(conn) == :admin do
+        Wwsac.get_contest(sub_params["contest_id"])
+      else
+        Wwsac.get_current_contest()
+      end
+
+    case contest do
+      nil ->
+        redirect(conn, to: Routes.page_path(conn, :index))
+
+      contest ->
         Wwsac.build_wwsac_submission(contest)
         |> Wwsac.new_wwsac_submission_changeset(file.path)
         |> Wwsac.analyze_wwsac_submission_file_changeset()
         |> Wwsac.save_wwsac_submission()
         |> case do
           {:ok, sub} ->
-            redirect(conn, to: Routes.wwsac_submission_path(conn, :show, sub.id))
+            redirect_opts = if params["redirect"], do: [redirect: params["redirect"]], else: []
+
+            redirect(conn,
+              to: Routes.wwsac_submission_path(conn, :show, sub.id, redirect_opts)
+            )
 
           {:error, changeset} ->
             conn
@@ -20,9 +34,6 @@ defmodule LumberWeb.WwsacSubmissionController do
             |> assign(:page_title, "Log Submission")
             |> render(:index)
         end
-
-      :error ->
-        redirect(conn, to: Routes.page_path(conn, :index))
     end
   end
 
@@ -30,7 +41,7 @@ defmodule LumberWeb.WwsacSubmissionController do
     redirect(conn, to: Routes.page_path(conn, :index))
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => id} = params) do
     case Wwsac.get_wwsac_submission(id) do
       {:ok, sub} ->
         options = %{
@@ -42,6 +53,7 @@ defmodule LumberWeb.WwsacSubmissionController do
         |> assign(:sub, sub)
         |> assign(:page_title, "Log Submission")
         |> assign(:options, options)
+        |> assign(:redirect, params["redirect"])
         |> assign(:changeset, Wwsac.prepare_wwsac_submission_changeset(sub))
         |> render()
 
@@ -58,16 +70,21 @@ defmodule LumberWeb.WwsacSubmissionController do
     redirect(conn, to: Routes.page_path(conn, :index))
   end
 
-  def update(conn, %{"id" => id, "submission" => params}) do
+  def update(conn, %{"id" => id, "submission" => sub_params} = params) do
     with {:ok, sub} <- Wwsac.get_wwsac_submission(id) do
       sub
-      |> Wwsac.prepare_wwsac_submission_changeset(params)
+      |> Wwsac.prepare_wwsac_submission_changeset(sub_params)
       |> Wwsac.submit_wwsac_submission()
       |> case do
         {:ok, sub} ->
+          redirect =
+            if to_string(params["redirect"]) == "",
+              do: Routes.wwsac_submission_path(conn, :show, sub.id),
+              else: params["redirect"]
+
           conn
           |> put_session(:my_callsign, sub.callsign)
-          |> redirect(to: Routes.wwsac_submission_path(conn, :show, sub.id))
+          |> redirect(to: redirect)
 
         {:error, changeset} ->
           options = %{
@@ -80,6 +97,7 @@ defmodule LumberWeb.WwsacSubmissionController do
           |> assign(:options, options)
           |> assign(:changeset, changeset)
           |> assign(:page_title, "Log Submission")
+          |> assign(:redirect, params["redirect"])
           |> render(:show)
       end
     else

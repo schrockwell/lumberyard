@@ -9,7 +9,6 @@ defmodule Lumber.Wwsac do
   alias Lumber.Wwsac.Submission
 
   alias HamRadio.Cabrillo
-  alias HamRadio.ADIF
 
   @spec build_wwsac_submission(Contest.t()) :: Submission.t()
   def build_wwsac_submission(contest) do
@@ -20,7 +19,7 @@ defmodule Lumber.Wwsac do
     Repo.get(Contest, id)
   end
 
-  @spec get_current_contest :: {:ok, Contest.t()} | :error
+  @spec get_current_contest :: Contest.t() | nil
   def get_current_contest do
     Repo.one(
       from(c in Contest,
@@ -31,10 +30,6 @@ defmodule Lumber.Wwsac do
         limit: 1
       )
     )
-    |> case do
-      nil -> :error
-      contest -> {:ok, contest}
-    end
   end
 
   @spec get_most_recent_contest :: Contest.t() | nil

@@ -1,6 +1,7 @@
 defmodule LumberWeb.Admin.WwsacContestController do
   use LumberWeb, :controller
 
+  alias Lumber.Wwsac
   alias Lumber.WwsacAdmin
 
   def index(conn, _) do
@@ -10,8 +11,12 @@ defmodule LumberWeb.Admin.WwsacContestController do
   end
 
   def show(conn, %{"id" => id}) do
+    contest = WwsacAdmin.get_contest_and_submissions(id)
+    new_sub = Wwsac.build_wwsac_submission(contest)
+
     conn
-    |> assign(:contest, WwsacAdmin.get_contest_and_submissions(id))
+    |> assign(:contest, contest)
+    |> assign(:upload_changeset, Wwsac.new_wwsac_submission_changeset(new_sub))
     |> render()
   end
 

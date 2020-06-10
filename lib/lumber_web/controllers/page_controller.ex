@@ -7,7 +7,13 @@ defmodule LumberWeb.PageController do
 
   def index(conn, _) do
     case Wwsac.get_current_contest() do
-      {:ok, contest} ->
+      nil ->
+        conn
+        |> assign(:contest, nil)
+        |> assign(:changeset, nil)
+        |> render()
+
+      contest ->
         sub = Wwsac.build_wwsac_submission(contest)
 
         conn
@@ -17,12 +23,6 @@ defmodule LumberWeb.PageController do
           :changeset,
           Wwsac.new_wwsac_submission_changeset(sub)
         )
-        |> render()
-
-      :error ->
-        conn
-        |> assign(:contest, nil)
-        |> assign(:changeset, nil)
         |> render()
     end
   end

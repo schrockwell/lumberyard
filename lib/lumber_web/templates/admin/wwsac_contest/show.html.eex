@@ -1,10 +1,23 @@
 <div class="flex justify-between items-center my-4">
   <div>
-    <h1 class="text-2xl font-semibold">Manage Submissions - <%= @contest.title %></h1>
+    <h1 class="text-2xl font-semibold">Manage Submissions – <%= @contest.title %></h1>
     <h2 class="text-xl text-gray-600"><%= long_date(@contest.starts_at) %></h2>
   </div>
 
   <%= link "Download E-mails", to: Routes.admin_wwsac_contest_path(@conn, :emails, @contest.id), class: "btn border-2 border-gray-600 text-gray-600" %>
+</div>
+
+<div class="bg-gray-200 my-8">
+  <div class="bg-gray-400 text-lg font-semibold px-4 py-2">Upload a New or Replacement Log</div>
+
+  <div class="p-4">
+    <%= form_for @upload_changeset, Routes.wwsac_submission_path(@conn, :create), [multipart: true], fn f -> %>
+      <%= hidden_input f, :contest_id %>
+      <input type="hidden" name="redirect" value="<%= @conn.request_path%>">
+      <%= file_input f, :file, class: "mr-2" %>
+      <%= submit "Continue", class: "btn bg-blue-600 text-white hover:bg-blue-700" %>
+    <% end  %>
+  </div>
 </div>
 
 <table class="table w-full">
