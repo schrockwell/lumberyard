@@ -60,12 +60,10 @@ defmodule LumberWeb.WwsacSubmissionController do
 
   def update(conn, %{"id" => id, "submission" => params}) do
     with {:ok, sub} <- Wwsac.get_wwsac_submission(id) do
-      changeset =
-        sub
-        |> Wwsac.prepare_wwsac_submission_changeset(params)
-        |> Wwsac.submit_wwsac_submission_changeset()
-
-      case Wwsac.submit_wwsac_submission(changeset) do
+      sub
+      |> Wwsac.prepare_wwsac_submission_changeset(params)
+      |> Wwsac.submit_wwsac_submission()
+      |> case do
         {:ok, sub} ->
           conn
           |> put_session(:my_callsign, sub.callsign)

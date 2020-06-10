@@ -227,11 +227,6 @@ defmodule Lumber.Wwsac do
     |> validate_inclusion(:power_level, option_values(power_level_options()))
   end
 
-  def submit_wwsac_submission_changeset(submission) do
-    now = DateTime.utc_now() |> DateTime.truncate(:second)
-    submission |> change(completed_at: now)
-  end
-
   defp update_callsign(changeset, field) do
     changeset
     |> get_change(field)
@@ -263,25 +258,42 @@ defmodule Lumber.Wwsac do
   end
 
   def submit_wwsac_submission(changeset) do
-    changeset
-    |> save_wwsac_submission()
-    |> case do
-      {:ok, sub} ->
-        delete_other_submissions(sub)
-        {:ok, sub}
+    temp_sub = apply_changes(changeset)
 
-      {:error, changeset} ->
-        {:error, changeset}
+    rejected_submission_count =
+      temp_sub
+      |> other_submissions_query()
+      |> where([s], not is_nil(s.rejected_at))
+      |> Repo.aggregate(:count)
+
+    if rejected_submission_count > 0 do
+      {:error,
+       changeset
+       |> Map.put(:action, :update)
+       |> add_error(:callsign, "has been disqualified from this week's competition")}
+    else
+      now = DateTime.utc_now() |> DateTime.truncate(:second)
+
+      changeset
+      |> change(completed_at: now)
+      |> save_wwsac_submission()
+      |> case do
+        {:ok, sub} ->
+          sub |> other_submissions_query() |> Repo.delete_all()
+          {:ok, sub}
+
+        {:error, changeset} ->
+          {:error, changeset}
+      end
     end
   end
 
-  defp delete_other_submissions(sub) do
+  defp other_submissions_query(sub) do
     from(s in Submission,
       where: s.contest_id == ^sub.contest_id,
       where: s.callsign == ^sub.callsign,
       where: s.id != ^sub.id
     )
-    |> Repo.delete_all()
   end
 
   def cancel_wwsac_submission(sub) do
