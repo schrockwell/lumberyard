@@ -36,6 +36,11 @@ defmodule HamRadio.ADIF.Decoder do
     {:contact, contact, log}
   end
 
+  defp reducer({field, value}, {:header, contact, %{header_text: ""} = log}) do
+    # "If the first character in an ADI file is <, it contains no Header."
+    reducer({field, value}, {:contact, contact, log})
+  end
+
   defp reducer({field, value}, {:header, contact, log}) do
     {:header, contact, decode_header_field(log, field, value)}
   end
