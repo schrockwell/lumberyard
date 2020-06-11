@@ -145,16 +145,33 @@ defmodule Lumber.Wwsac do
       |> get_field(:file_contents)
       |> Wwsac.Log.from_file_contents()
 
-    change(changeset,
-      qso_count: length(log.contacts),
-      qso_points: log.total_contact_points,
-      prefix_count: log.total_prefixes,
-      final_score: log.final_score,
-      callsign: guess_my_callsign(log),
-      power_level: guess_power_level(log),
-      age_group: guess_age_group(log),
-      email: guess_email(log)
-    )
+    cond do
+      is_nil(log) ->
+        add_error(
+          changeset,
+          :wwsac_log,
+          "The log file could not be read. Please use the ADIF or Cabrillo file formats."
+        )
+
+      Wwsac.Log.has_errors?(log) ->
+        log
+        |> Wwsac.Log.error_summaries()
+        |> Enum.reduce(changeset, fn e, cs ->
+          add_error(cs, :wwsac_log, e)
+        end)
+
+      true ->
+        change(changeset,
+          qso_count: length(log.contacts),
+          qso_points: log.total_contact_points,
+          prefix_count: log.total_prefixes,
+          final_score: log.final_score,
+          callsign: guess_my_callsign(log),
+          power_level: guess_power_level(log),
+          age_group: guess_age_group(log),
+          email: guess_email(log)
+        )
+    end
   end
 
   defp guess_my_callsign(%{contacts: [contact | _rest]} = _log) do

@@ -3,7 +3,35 @@ defmodule LumberWeb.WwsacSubmissionController do
 
   alias Lumber.Wwsac
 
+  def new(conn, _) do
+    conn
+    |> assign_upload_form()
+    |> assign(:page_title, "Submit a Log")
+    |> render()
+  end
+
+  def assign_upload_form(conn) do
+    case Wwsac.get_current_contest() do
+      nil ->
+        conn
+        |> assign(:contest, nil)
+        |> assign(:changeset, nil)
+
+      contest ->
+        sub = Wwsac.build_wwsac_submission(contest)
+
+        conn
+        |> assign(:contest, contest)
+        |> assign(
+          :changeset,
+          Wwsac.new_wwsac_submission_changeset(sub)
+        )
+    end
+  end
+
   def create(conn, %{"submission" => %{"file" => file} = sub_params} = params) do
+    IO.inspect(file)
+    # Admins can override the default contest_id
     contest =
       if sub_params["contest_id"] && LumberWeb.Authentication.role(conn) == :admin do
         Wwsac.get_contest(sub_params["contest_id"])
@@ -31,8 +59,8 @@ defmodule LumberWeb.WwsacSubmissionController do
           {:error, changeset} ->
             conn
             |> assign(:changeset, changeset)
-            |> assign(:page_title, "Log Submission")
-            |> render(:index)
+            |> assign(:contest, contest)
+            |> render(:new)
         end
     end
   end

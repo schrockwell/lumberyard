@@ -23,6 +23,7 @@ defmodule LumberWeb do
 
       import Plug.Conn
       import LumberWeb.Gettext
+      import LumberWeb.Controller
       alias LumberWeb.Router.Helpers, as: Routes
     end
   end

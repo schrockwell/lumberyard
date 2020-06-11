@@ -12,6 +12,30 @@ defmodule Lumber.Wwsac.Log do
   alias Lumber.Wwsac
   alias Lumber.Logs
 
+  def has_errors?(log) do
+    log.errors != [] || Enum.any?(log.contacts, fn c -> c.errors != [] end)
+  end
+
+  def error_summaries(log) do
+    contact_errors =
+      log.contacts
+      |> Stream.map(&contact_errors/1)
+      |> Enum.reject(&is_nil/1)
+
+    log.errors ++ contact_errors
+  end
+
+  defp contact_errors(%{errors: []}), do: nil
+
+  defp contact_errors(contact) do
+    (contact.callsign || "UNKNOWN") <>
+      " at " <>
+      (to_string(contact.datetime) || "UNKNOWN") <>
+      ": " <>
+      Enum.join(contact.errors, "; ") <>
+      "."
+  end
+
   def from_file_contents(file_contents) do
     case Logs.guess_format(file_contents) do
       {:ok, :adif} ->

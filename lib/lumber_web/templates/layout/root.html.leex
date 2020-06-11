@@ -23,7 +23,7 @@
         <a class="text-lg font-semibold text-gray-300" href="<%= Routes.page_path(@conn, :index) %>">Worldwide Sideband Activity Contest</a>
 
         <div class="flex">
-          <a href="<%= Routes.page_path(@conn, :index) %>" class="block hover:text-white p-4">Submit a Log</a>
+          <a href="<%= Routes.wwsac_submission_path(@conn, :new) %>" class="block hover:text-white p-4">Submit a Log</a>
           <a href="<%= Routes.wwsac_contest_path(@conn, :index) %>" class="block hover:text-white p-4">Results</a>
           <a href="<%= Routes.wwsac_leaderboard_path(@conn, :index) %>" class="block hover:text-white p-4">Leaderboard</a>
         </div>

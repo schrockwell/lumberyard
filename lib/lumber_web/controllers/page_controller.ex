@@ -6,25 +6,10 @@ defmodule LumberWeb.PageController do
   plug :assign_next_contest
 
   def index(conn, _) do
-    case Wwsac.get_current_contest() do
-      nil ->
-        conn
-        |> assign(:contest, nil)
-        |> assign(:changeset, nil)
-        |> render()
-
-      contest ->
-        sub = Wwsac.build_wwsac_submission(contest)
-
-        conn
-        |> assign(:page_title, "Home")
-        |> assign(:contest, contest)
-        |> assign(
-          :changeset,
-          Wwsac.new_wwsac_submission_changeset(sub)
-        )
-        |> render()
-    end
+    conn
+    |> LumberWeb.WwsacSubmissionController.assign_upload_form()
+    |> assign(:page_title, "Home")
+    |> render()
   end
 
   defp assign_next_contest(conn, _) do

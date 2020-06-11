@@ -68,8 +68,17 @@
     @apply border-b;
   }
 
-  td, th {
+  td,
+  th {
     @apply py-1;
+  }
+}
+
+ul.bulleted {
+  @apply list-disc;
+
+  li {
+    @apply ml-4;
   }
 }
 

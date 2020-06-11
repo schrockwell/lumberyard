@@ -32,7 +32,7 @@ defmodule LumberWeb.Router do
   scope "/wwsac", LumberWeb do
     pipe_through :browser
 
-    resources "/submit", WwsacSubmissionController, only: [:create, :show, :update]
+    resources "/submit", WwsacSubmissionController, only: [:new, :create, :show, :update]
     resources "/contests", WwsacContestController, only: [:index, :show]
     resources "/leaderboard", WwsacLeaderboardController, only: [:index, :show]
   end
