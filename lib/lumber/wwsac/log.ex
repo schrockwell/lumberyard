@@ -67,6 +67,7 @@ defmodule Lumber.Wwsac.Log do
           my_callsign: adif_contact.fields["STATION_CALLSIGN"] || adif_contact.fields["OPERATOR"],
           exchange_received:
             adif_contact.fields["APP_N1MM_EXCHANGE1"] || adif_contact.fields["SECTION"],
+          exchange_sent: adif_contact.fields["STX_STRING"],
           errors: adif_contact.errors,
           prefix: nil,
           points: 0,

@@ -216,15 +216,12 @@ defmodule HamRadio.ADIF.Fields do
   end
 
   defp do_decode(:time, string) do
-    string
-    |> Timex.parse("{h24}{m}{s}")
-    |> case do
-      # naive -> UTC
+    with {:error, _} <- Timex.parse(string, "{h24}{m}{s}"),
+         {:error, _} <- Timex.parse(string, "{h24}{m}") do
+      :error
+    else
       {:ok, result} ->
         {:ok, Timex.to_datetime(result)}
-
-      {:error, _} ->
-        :error
     end
   end
 
