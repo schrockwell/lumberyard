@@ -315,4 +315,43 @@ defmodule Lumber.Wwsac do
   def guess_submission_format(sub) do
     Logs.guess_format(sub.file_contents)
   end
+
+  def __rescore_all__(opts \\ []) do
+    query =
+      from s in Submission,
+        where: not is_nil(s.completed_at),
+        where: is_nil(s.rejected_at),
+        select: s.id
+
+    query =
+      if opts[:after] do
+        from s in query, where: s.completed_at > ^opts[:after]
+      else
+        query
+      end
+
+    sub_ids = Repo.all(query)
+
+    results =
+      sub_ids
+      |> Task.async_stream(fn sub_id ->
+        Submission
+        |> Repo.get(sub_id)
+        |> change()
+        |> analyze_wwsac_submission_file_changeset()
+        |> Repo.update()
+        |> case do
+          {:ok, _} -> {:ok, sub_id}
+          {:error, _} -> {:error, sub_id}
+        end
+      end)
+      |> Stream.map(&elem(&1, 1))
+      |> Enum.to_list()
+
+    ok_ids = Keyword.get_values(results, :ok)
+    error_ids = Keyword.get_values(results, :error)
+
+    IO.puts("OK - #{length(ok_ids)} submissions")
+    IO.puts("Error - #{length(error_ids)} submissions: #{Enum.join(error_ids, ", ")}")
+  end
 end
