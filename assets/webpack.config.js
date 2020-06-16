@@ -24,6 +24,7 @@ module.exports = (env, options) => {
         new PurgecssPlugin({
           paths: globAll.sync([
             "../lib/lumber_web/templates/**/*.html.eex",
+            "../lib/lumber_web/templates/**/*.html.leex",
             "../lib/lumber_web/views/**/*.ex",
             "../assets/js/**/*.js",
           ]),
