@@ -31,7 +31,7 @@ module.exports = (env, options) => {
           extractors: [
             {
               extractor: TailwindExtractor,
-              extensions: ["html", "js", "eex", "ex"],
+              extensions: ["html", "js", "eex", "ex", "leex"],
             },
           ],
         }),
