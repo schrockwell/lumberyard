@@ -30,7 +30,6 @@ defmodule LumberWeb.WwsacSubmissionController do
   end
 
   def create(conn, %{"submission" => %{"file" => file} = sub_params} = params) do
-    IO.inspect(file)
     # Admins can override the default contest_id
     contest =
       if sub_params["contest_id"] && LumberWeb.Authentication.role(conn) == :admin do

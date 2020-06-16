@@ -1,0 +1,25 @@
+#
+# Create this file as 
+#
+#   /etc/systemd/system/lumber.service
+#
+# And enable using
+#
+#   sudo systemctl enable lumber.service
+#
+# Source: https://mfeckie.github.io/Phoenix-In-Production-With-Systemd/
+#
+
+[Unit]
+Description=Lumber Phoenix Server
+After=network.target
+
+[Service]
+WorkingDirectory=/srv/www/logs.wwsac.com/lumberyard
+EnvironmentFile=/srv/www/logs.wwsac.com/lumberyard/.env
+ExecStart=/usr/bin/mix phx.server
+User=rockwell
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
