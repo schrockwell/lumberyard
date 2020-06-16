@@ -23,8 +23,8 @@ module.exports = (env, options) => {
         new OptimizeCSSAssetsPlugin({}),
         new PurgecssPlugin({
           paths: globAll.sync([
-            "../lib/<APP_NAME>_web/templates/**/*.html.eex",
-            "../lib/<APP_NAME>_web/views/**/*.ex",
+            "../lib/lumber_web/templates/**/*.html.eex",
+            "../lib/lumber_web/views/**/*.ex",
             "../assets/js/**/*.js",
           ]),
           extractors: [
