@@ -37,6 +37,10 @@
 
 .link {
   @apply text-blue-500 underline;
+
+  &:hover {
+    @apply text-blue-600;
+  }
 }
 
 .btn {

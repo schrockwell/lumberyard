@@ -7,6 +7,7 @@ defmodule Lumber.Wwsac do
   alias Lumber.Wwsac
   alias Lumber.Schedule.Contest
   alias Lumber.Wwsac.Submission
+  alias Lumber.Wwsac.Changeset
 
   alias HamRadio.Cabrillo
 
@@ -95,22 +96,11 @@ defmodule Lumber.Wwsac do
   end
 
   def age_group_options do
-    [
-      {"Please select...", ""},
-      {"Youth YL (26 and under)", "YYL"},
-      {"YL (over 26)", "YL"},
-      {"Youth (26 and under)", "Y"},
-      {"OM (over 26)", "OM"}
-    ]
+    Changeset.age_group_options()
   end
 
   def power_level_options do
-    [
-      {"Please select...", ""},
-      {"QRP (5W max)", "QRP"},
-      {"Low Power (100W max)", "LP"},
-      {"High Power (1,500W max)", "HP"}
-    ]
+    Changeset.power_level_options()
   end
 
   def new_wwsac_submission_changeset(submission, path \\ nil)
@@ -217,15 +207,11 @@ defmodule Lumber.Wwsac do
   defp guess_email(%{source: %Cabrillo.Log{header_fields: %{"EMAIL" => email}}}), do: email
   defp guess_email(_), do: nil
 
-  defp option_values(list) do
-    Enum.map(list, &elem(&1, 1))
-  end
-
   def prepare_wwsac_submission_changeset(submission, params \\ %{}) do
     submission
     |> cast(params, [:callsign, :email, :age_group, :power_level, :send_notifications])
-    |> update_callsign(:callsign)
-    |> trim_field(:email)
+    |> Changeset.update_callsign(:callsign)
+    |> Changeset.trim_field(:email)
     |> validate_format(:email, ~r/@/, message: "is not a valid e-mail address")
     |> validate_required([
       :callsign,
@@ -235,34 +221,8 @@ defmodule Lumber.Wwsac do
       :file_contents,
       :contest_id
     ])
-    |> validate_inclusion(:age_group, option_values(age_group_options()))
-    |> validate_inclusion(:power_level, option_values(power_level_options()))
-  end
-
-  defp update_callsign(changeset, field) do
-    changeset
-    |> get_change(field)
-    |> case do
-      string when is_binary(string) ->
-        put_change(changeset, field, normalize_callsign(string))
-
-      _ ->
-        changeset
-    end
-  end
-
-  defp normalize_callsign(callsign) do
-    callsign |> String.trim() |> String.upcase()
-  end
-
-  defp trim_field(changeset, field) do
-    case get_change(changeset, field) do
-      string when is_binary(string) ->
-        put_change(changeset, field, String.trim(string))
-
-      _ ->
-        changeset
-    end
+    |> Changeset.validate_age_group()
+    |> Changeset.validate_power_level()
   end
 
   def save_wwsac_submission(changeset) do
@@ -318,14 +278,15 @@ defmodule Lumber.Wwsac do
 
   def __rescore_all__(opts \\ []) do
     query =
-      from s in Submission,
+      from(s in Submission,
         where: not is_nil(s.completed_at),
         where: is_nil(s.rejected_at),
         select: s.id
+      )
 
     query =
       if opts[:after] do
-        from s in query, where: s.completed_at > ^opts[:after]
+        from(s in query, where: s.completed_at > ^opts[:after])
       else
         query
       end

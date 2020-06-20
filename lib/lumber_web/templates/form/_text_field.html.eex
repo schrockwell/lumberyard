@@ -1,0 +1,13 @@
+<fieldset class="mb-8">
+  <label class="block uppercase tracking-wide text-xs font-bold mb-2" for="grid-first-name">
+    <%= @label %>
+  </label>
+
+  <%= text_input @form, @field, placeholder: assigns[:placeholder], class: "appearance-none inline-block mr-4 w-64 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 #{to_string(assigns[:class])}" %>
+  
+  <%= error_tag(@form, @field) %>
+
+  <%= if assigns[:hint] do %>
+    <div class="text-sm italic mt-1 text-gray-600"><%= @hint %></div>
+  <% end %>
+</fieldset>

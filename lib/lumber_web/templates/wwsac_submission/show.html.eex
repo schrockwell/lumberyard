@@ -4,90 +4,53 @@
     <a href="<%= Routes.wwsac_contest_path(@conn, :index) %>" class="text-xl bg-blue-600 hover:bg-blue-700 rounded-lg inline-block px-6 py-2 text-white">See this week's results →</a>
   </div>
 <% else %>
-
-<div class="bg-gray-200 my-8">
-  <div class="bg-gray-400 text-lg font-semibold px-4 py-2">Please Provide Log Details</div>
-  <div class="p-4">
-    <div class="flex flex-wrap mb-8">
-      <div class="flex-1 whitespace-no-wrap text-center">
-        <div class="text-3xl font-semibold"><%= delimit(@sub.qso_count || 0) %></div>
-        <div class="text-gray-600">QSOs</div>
-      </div>
-
-      <div class="flex-1 whitespace-no-wrap text-center">
-        <div class="text-3xl font-semibold"><%= delimit(@sub.qso_points || 0) %></div>
-        <div class="text-gray-600">QSO Points</div>
-      </div>
-
-      <div class="flex-1 whitespace-no-wrap text-center">
-        <div class="text-3xl font-semibold"><%= delimit(@sub.prefix_count || 0) %></div>
-        <div class="text-gray-600">Prefixes</div>
-      </div>
-
-      <div class="flex-1 whitespace-no-wrap text-center">
-        <div class="text-3xl font-semibold"><%= delimit(@sub.final_score || 0) %></div>
-        <div class="text-gray-600">Final Score</div>
-      </div>
-    </div>
-
-    <%= form_for @changeset, Routes.wwsac_submission_path(@conn, :update, @changeset.data), fn f -> %>
-      <input type="hidden" name="redirect" value="<%= @redirect %>">
-
-      <fieldset class="mb-8">
-        <label class="block uppercase tracking-wide text-xs font-bold mb-2" for="grid-first-name">
-          Callsign
-        </label>
-        <%= text_input f, :callsign, placeholder: "Required", class: "appearance-none inline-block mr-4 w-64 font-mono border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" %>
-        <%= error_tag(f, :callsign) %>
-      </fieldset>
-
-      <fieldset class="mb-8">
-        <label class="block uppercase tracking-wide text-xs font-bold mb-2" for="grid-first-name">
-          Age Group
-        </label>
-        <div class="inline-block relative">
-          <%= select f, :age_group, @options.age_group, class: "inline-block w-64 bg-white border border-gray-300 focus:border-gray-500 px-3 py-3 mr-4 rounded focus:outline-none" %>
-          <%= error_tag(f, :age_group) %>
+  <div class="bg-gray-200 my-8">
+    <div class="bg-gray-400 text-lg font-semibold px-4 py-2">Please Provide Log Details</div>
+    <div class="p-4">
+      <div class="flex flex-wrap mb-8">
+        <div class="flex-1 whitespace-no-wrap text-center">
+          <div class="text-3xl font-semibold"><%= delimit(@sub.qso_count || 0) %></div>
+          <div class="text-gray-600">QSOs</div>
         </div>
-      </fieldset>
 
-      <fieldset class="mb-8">
-        <label class="block uppercase tracking-wide text-xs font-bold mb-2" for="grid-first-name">
-          Power Level
-        </label>
-        <div class="inline-block relative">
-          <%= select f, :power_level, @options.power_level, class: "inline-block w-64 bg-white border border-gray-300 focus:border-gray-500 px-3 py-3 mr-4 rounded focus:outline-none" %>
-          <%= error_tag(f, :power_level) %>
+        <div class="flex-1 whitespace-no-wrap text-center">
+          <div class="text-3xl font-semibold"><%= delimit(@sub.qso_points || 0) %></div>
+          <div class="text-gray-600">QSO Points</div>
         </div>
-      </fieldset>
 
-      <fieldset class="mb-8">
-        <label class="block uppercase tracking-wide text-xs font-bold mb-2" for="grid-first-name">
-          E-mail
-        </label>
-        <%= text_input f, :email, placeholder: "Required", class: "appearance-none inline-block mr-4 w-1/3 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" %>
-        <%= error_tag(f, :email) %>
-        <div class="text-sm italic mt-1 text-gray-600">
-          We will only use your address for contest communications.
+        <div class="flex-1 whitespace-no-wrap text-center">
+          <div class="text-3xl font-semibold"><%= delimit(@sub.prefix_count || 0) %></div>
+          <div class="text-gray-600">Prefixes</div>
         </div>
-      </fieldset>
 
-      <fieldset class="mb-8">
-        <label class="cursor-pointer">
-          <%= checkbox f, :send_notifications, class: "mr-2" %>
-          E-mail me results of this week's contest
-        </label>
-      </fieldset>
+        <div class="flex-1 whitespace-no-wrap text-center">
+          <div class="text-3xl font-semibold"><%= delimit(@sub.final_score || 0) %></div>
+          <div class="text-gray-600">Final Score</div>
+        </div>
+      </div>
 
-      <%= submit class: "btn bg-blue-600 text-white hover:bg-blue-700" do %>
-         Submit Log
+      <%= form_for @changeset, Routes.wwsac_submission_path(@conn, :update, @changeset.data), fn f -> %>
+        <input type="hidden" name="redirect" value="<%= @redirect %>">
+
+        <%= form_text_field(f, :callsign, "Callsign", class: "font-mono uppercase", placeholder: "MYCALL") %>
+
+        <%= form_select(f, :age_group, "Age Group", @options.age_group) %>
+
+        <%= form_select(f, :power_level, "Power Level", @options.power_level) %>
+
+        <%= form_text_field(f, :email, "Email", placeholder: "Required", hint: "We will only use your address for contest communications.") %>
+
+        <%= form_checkbox(f, :send_notifications, "E-mail me results of this week's contest") %>
+
+        <%= submit class: "btn bg-blue-600 text-white hover:bg-blue-700" do %>
+           Submit Log
+        <% end %>
+
+        <span class="mx-4 text-gray-600 italic">or</span>
+
+        <button type="submit" name="cancel" value="true" class="btn border-2 border-gray-600 text-gray-600 hover:bg-gray-300">
+          Cancel
+        </button>
       <% end %>
-
-      <span class="mx-4 text-gray-600 italic">or</span>
-
-      <button type="submit" name="cancel" value="true" class="btn border-2 border-gray-600 text-gray-600 hover:bg-gray-300">
-        Cancel
-      </button>
-    <% end %>
-  <% end %>
-</div>
+  </div>
+<% end %>

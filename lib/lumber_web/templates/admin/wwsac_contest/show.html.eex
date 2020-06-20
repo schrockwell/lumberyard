@@ -29,6 +29,7 @@
       <th class="text-left">Power</th>
       <th class="text-right">Score</th>
       <th class="text-right">Submitted</th>
+      <th class="text-right"></th>
       <th></th>
     </tr>
   </thead>
@@ -49,6 +50,11 @@
         <td><%= sub.power_level %></td>
         <td class="text-right"><%= delimit(sub.final_score) %></td>
         <td class="text-right"><%= sub.completed_at %></td>
+        <td class="text-right">
+          <%= if sub.modified_at do %>
+            <span class="uppercase text-sm bg-orange-500 text-white rounded px-3 py-1">Modified</span>
+          <% end %>
+        </td>
         <td class="text-right">
           <%= if sub.rejected_at do %>
             <span class="bg-red-600 text-sm text-white px-2 rounded mr-2">DQ</span>

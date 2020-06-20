@@ -15,6 +15,7 @@ defmodule Lumber.Repo.Migrations.CreateWwsacSubmissions do
       add :final_score, :integer
       add :completed_at, :utc_datetime
       add :rejected_at, :utc_datetime
+      add :modified_at, :utc_datetime
       add :send_notifications, :boolean, null: false, default: false
       add :contest_id, references(:contests, on_delete: :nothing, type: :binary_id)
 

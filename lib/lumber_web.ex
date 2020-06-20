@@ -91,6 +91,7 @@ defmodule LumberWeb do
       import Phoenix.View
 
       import LumberWeb.ErrorHelpers
+      import LumberWeb.FormHelpers
       import LumberWeb.Gettext
       alias LumberWeb.Router.Helpers, as: Routes
     end

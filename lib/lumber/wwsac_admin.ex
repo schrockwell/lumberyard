@@ -4,8 +4,42 @@ defmodule Lumber.WwsacAdmin do
 
   alias Lumber.Repo
   alias Lumber.Schedule.Contest
-  alias Lumber.Wwsac.Submission
   alias Lumber.Wwsac
+  alias Lumber.Wwsac.Submission
+  alias Lumber.Wwsac.Changeset
+
+  def change_submission(sub, params \\ %{}) do
+    sub
+    |> cast(params, [
+      :age_group,
+      :callsign,
+      :email,
+      :power_level,
+      :send_notifications,
+      :prefix_count,
+      :qso_count,
+      :qso_points,
+      :final_score
+    ])
+    |> validate_required([
+      :age_group,
+      :callsign,
+      :email,
+      :power_level,
+      :final_score
+    ])
+    |> Changeset.trim_field(:email)
+    |> Changeset.update_callsign(:callsign)
+    |> Changeset.validate_age_group()
+    |> Changeset.validate_power_level()
+    |> change(modified_at: DateTime.utc_now() |> DateTime.truncate(:second))
+  end
+
+  def create_or_update_submission(sub, params) do
+    sub
+    |> change_submission(params)
+    |> Repo.insert_or_update()
+  end
 
   def get_previous_contests do
     from(c in Contest,

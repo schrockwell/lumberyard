@@ -1,15 +1,25 @@
 <div class="flex items-start justify-between mt-4 mb-8">
-  <h1 class="text-2xl font-semibold">Manage Submissions – <%= @sub.contest.title %> – <%= @sub.callsign %></h1>
+  <h1 class="text-2xl font-semibold">Manage Submissions – <%= link(@sub.contest.title, to: Routes.admin_wwsac_contest_path(@conn, :show, @sub.contest), class: "link") %> – <%= @sub.callsign %></h1>
 
-  <%= unless @sub.rejected_at do %>
-    <%= button "Disqualify", to: Routes.admin_wwsac_submission_path(@conn, :reject, @sub.id), class: "btn py-2 border-red-600 border-2 text-red-600 hover:bg-red-100" %>
-  <% end %>
+  <div>
+    <%= link "Edit Submission", to: Routes.admin_wwsac_submission_path(@conn, :edit, @sub.id), class: "btn py-2 border-blue-600 border-2 text-blue-600 hover:bg-blue-100" %>
+
+    <%= unless @sub.rejected_at do %>
+      <%= button "Disqualify", to: Routes.admin_wwsac_submission_path(@conn, :reject, @sub.id), class: "btn ml-4 py-2 border-red-600 border-2 text-red-600 hover:bg-red-100" %>
+    <% end %>
+  </div>
 </div>
 
 <%= if @sub.rejected_at do %>
   <div class="bg-red-600 text-white px-6 py-3 my-8 flex justify-between items-center">
     <div>⚠  This log has been disqualified.</div>
     <%= button "Undo", to: Routes.admin_wwsac_submission_path(@conn, :unreject, @sub.id), class: "btn py-2 border-white border-2 text-white hover:bg-red-500" %>
+  </div>
+<% end %>
+
+<%= if @sub.modified_at do %>
+  <div class="bg-orange-500 text-white px-6 py-3 my-8">
+    ⚠  This log has been created or modified by a contest admin.
   </div>
 <% end %>
 
