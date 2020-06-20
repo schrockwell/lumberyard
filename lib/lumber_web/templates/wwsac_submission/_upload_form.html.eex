@@ -2,8 +2,8 @@
     <div class="bg-gray-400 text-lg font-semibold px-4 py-2">Upload Your Log</div>
     <div class="p-4">
         <%= if @changeset do %>
-            <p class="mb-4">
-                Now accepting submissions for <%= @contest.title %> until <%= wwsac_submission_before(@contest.submissions_before) %>.
+            <p class="mt-2 mb-8 text-xl">
+                Now accepting submissions for <%= @contest.title %>, until <%= wwsac_submission_before(@contest.submissions_before) %>.
             </p>
 
             <%= form_for @changeset, Routes.wwsac_submission_path(@conn, :create), [multipart: true], fn f -> %>

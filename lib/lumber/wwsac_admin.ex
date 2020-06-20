@@ -9,6 +9,8 @@ defmodule Lumber.WwsacAdmin do
   alias Lumber.Wwsac.Changeset
 
   def change_submission(sub, params \\ %{}) do
+    now = DateTime.utc_now() |> DateTime.truncate(:second)
+
     sub
     |> cast(params, [
       :age_group,
@@ -32,13 +34,29 @@ defmodule Lumber.WwsacAdmin do
     |> Changeset.update_callsign(:callsign)
     |> Changeset.validate_age_group()
     |> Changeset.validate_power_level()
-    |> change(modified_at: DateTime.utc_now() |> DateTime.truncate(:second))
+    |> change(modified_at: now, completed_at: now)
   end
 
   def create_or_update_submission(sub, params) do
     sub
     |> change_submission(params)
     |> Repo.insert_or_update()
+    |> case do
+      {:ok, sub} ->
+        sub |> other_submissions_query() |> Repo.delete_all()
+        {:ok, sub}
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
+  end
+
+  defp other_submissions_query(sub) do
+    from(s in Submission,
+      where: s.contest_id == ^sub.contest_id,
+      where: s.callsign == ^sub.callsign,
+      where: s.id != ^sub.id
+    )
   end
 
   def get_previous_contests do
@@ -64,6 +82,17 @@ defmodule Lumber.WwsacAdmin do
 
   def get_contest(contest_id) do
     Repo.get(Contest, contest_id)
+  end
+
+  def new_submission(contest_id) do
+    contest = get_contest(contest_id)
+
+    %Submission{
+      contest: contest,
+      contest_id: contest.id
+    }
+
+    # Ecto.build_assoc(contest, :wwsac_submissions)
   end
 
   def get_submission(id) do

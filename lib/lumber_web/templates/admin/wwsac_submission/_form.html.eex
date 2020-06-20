@@ -1,0 +1,28 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <div class="flex">
+    <div class="md:w-1/2">
+      <%= hidden_input(f, :contest_id) %>
+      
+      <%= form_text_field(f, :callsign, "Callsign", class: "font-mono uppercase", placeholder: "MYCALL") %>
+
+      <%= form_select(f, :age_group, "Age Group", @options.age_group) %>
+
+      <%= form_select(f, :power_level, "Power Level", @options.power_level) %>
+
+      <%= form_text_field(f, :email, "Email", placeholder: "Required") %>
+
+      <%= form_checkbox(f, :send_notifications, "E-mail results of this week's contest") %>
+    </div>
+
+    <div class="md:w-1/2">
+      <%= form_text_field(f, :qso_count, "QSO Count", placeholder: "Optional") %>
+      <%= form_text_field(f, :qso_points, "QSO Points", placeholder: "Optional") %>
+      <%= form_text_field(f, :prefix_count, "Prefixes", placeholder: "Optional") %>
+      <%= form_text_field(f, :final_score, "Final Score", placeholder: "Required") %>
+    </div>
+  </div>
+
+  <%= submit class: "btn bg-blue-600 text-white hover:bg-blue-700" do %>
+     Save Changes
+  <% end %>
+<% end %>

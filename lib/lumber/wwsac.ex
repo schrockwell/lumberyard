@@ -81,6 +81,8 @@ defmodule Lumber.Wwsac do
     end
   end
 
+  def put_wwsac_log(%{file_contents: nil} = sub), do: sub
+
   def put_wwsac_log(sub) do
     %{sub | wwsac_log: Wwsac.Log.from_file_contents(sub.file_contents)}
   end

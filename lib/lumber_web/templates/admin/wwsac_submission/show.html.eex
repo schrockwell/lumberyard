@@ -23,29 +23,57 @@
   </div>
 <% end %>
 
-<table class="table font-mono w-full text-sm">
-  <thead>
-    <tr>
-      <th class="text-left">UTC</th>
-      <th class="text-left">Callsign</th>
-      <th class="text-left">Sent</th>
-      <th class="text-left">Rcvd</th>
-      <th class="text-left">Prefix</th>
-      <th class="text-left">Points</th>
-      <th class="text-left">Mult?</th>
-    </tr>
-  </thead>
-  <tbody>
-    <%= for contact <- @sub.wwsac_log.contacts do %>
-      <tr class="hover:bg-gray-200">
-        <td><%= contact.datetime %></td>
-        <td><%= contact.callsign %></td>
-        <td><%= contact.exchange_sent || "--" %></td>
-        <td><%= contact.exchange_received %></td>
-        <td><%= contact.prefix || "--" %></td>
-        <td><%= contact.points %></td>
-        <td><%= if contact.multipliers == 1, do: "Mult" %></td>
+<div class="flex my-8">
+  <div class="flex-1">
+    <h4 class="text-lg mb-1 font-semibold">Submission</h4>
+    <ul class="bulleted">
+      <li><b>Callsign:</b> <%= @sub.callsign %></li>
+      <li><b>Email:</b> <%= @sub.email %></li>
+      <li><b>Age Group:</b> <%= @sub.age_group %></li>
+      <li><b>Power Level:</b> <%= @sub.power_level %></li>
+      <li><b>Send Notifications:</b> <%= @sub.send_notifications %></li>
+    </ul>
+  </div>
+  <div class="flex-1">
+    <h4 class="text-lg mb-1 font-semibold">Scoring</h4>
+    <ul class="bulleted">
+      <li><b>QSO Count:</b> <%= @sub.qso_count || "N/A" %></li>
+      <li><b>QSO Points:</b> <%= @sub.qso_points || "N/A" %></li>
+      <li><b>Prefix Count:</b> <%= @sub.prefix_count || "N/A" %></li>
+      <li><b>Final Score:</b> <%= delimit(@sub.final_score) %></li>
+    </ul>
+  </div>
+</div>
+
+<%= if @sub.wwsac_log do %>
+  <table class="table font-mono w-full text-sm">
+    <thead>
+      <tr>
+        <th class="text-left">UTC</th>
+        <th class="text-left">Callsign</th>
+        <th class="text-left">Sent</th>
+        <th class="text-left">Rcvd</th>
+        <th class="text-left">Prefix</th>
+        <th class="text-left">Points</th>
+        <th class="text-left">Mult?</th>
       </tr>
-    <% end %>
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <%= for contact <- @sub.wwsac_log.contacts do %>
+        <tr class="hover:bg-gray-200">
+          <td><%= contact.datetime %></td>
+          <td><%= contact.callsign %></td>
+          <td><%= contact.exchange_sent || "--" %></td>
+          <td><%= contact.exchange_received %></td>
+          <td><%= contact.prefix || "--" %></td>
+          <td><%= contact.points %></td>
+          <td><%= if contact.multipliers == 1, do: "Mult" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="text-gray-600 italic my-8">
+    There is no log attached.
+  </div>
+<% end %>

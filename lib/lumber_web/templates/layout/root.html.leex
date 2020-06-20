@@ -20,7 +20,7 @@
   <body>
     <div class="bg-gray-800">
       <div class="container mx-auto flex justify-between items-center text-gray-500">
-        <a class="text-lg font-semibold text-gray-300" href="<%= Routes.page_path(@conn, :index) %>">Worldwide Sideband Activity Contest</a>
+        <a class="text-lg font-semibold text-gray-300" href="<%= Routes.page_path(@conn, :index) %>">Worldwide Sideband Activity Contest – Log Database</a>
 
         <div class="flex">
           <a href="<%= Routes.wwsac_submission_path(@conn, :new) %>" class="block hover:text-white p-4">Submit a Log</a>
@@ -46,6 +46,12 @@
 
     <div class="container mx-auto">
       <%= @inner_content %>
+    </div>
+
+    <div class="container mx-auto mb-8 text-sm text-gray-500 italic border-t pt-8">
+      <a href="https://wwsac.com/" class="underline hover:text-gray-600">Learn More</a> –
+      <a href="https://wwsac.com/rules.html" class="underline hover:text-gray-600">Rules</a> –
+      <a href="https://wwsac.com/contact.html" class="underline hover:text-gray-600">Contact Support</a>
     </div>
   </body>
 </html>

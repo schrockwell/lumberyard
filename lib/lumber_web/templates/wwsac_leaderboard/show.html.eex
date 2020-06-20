@@ -14,6 +14,12 @@
     </div>
 </div>
 
+<%= if @year == 2020 do %>
+    <div class="mb-8 bg-blue-100 text-blue-900 p-4">
+        ℹ  Logs submitted before June 23 are still being processed and are not included in these totals yet.
+    </div>
+<% end %>
+
 <div class="flex flex-wrap -mx-2">
     <%= render_many @leaderboards, LumberWeb.WwsacLeaderboardView, "_leaderboard.html", my_callsign: @my_callsign  %>
 </div>

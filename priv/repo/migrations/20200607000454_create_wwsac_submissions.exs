@@ -4,7 +4,7 @@ defmodule Lumber.Repo.Migrations.CreateWwsacSubmissions do
   def change do
     create table(:wwsac_submissions, primary_key: false) do
       add :id, :binary_id, primary_key: true
-      add :file_contents, :text, null: false
+      add :file_contents, :text
       add :callsign, :string
       add :email, :string
       add :age_group, :string
@@ -17,7 +17,7 @@ defmodule Lumber.Repo.Migrations.CreateWwsacSubmissions do
       add :rejected_at, :utc_datetime
       add :modified_at, :utc_datetime
       add :send_notifications, :boolean, null: false, default: false
-      add :contest_id, references(:contests, on_delete: :nothing, type: :binary_id)
+      add :contest_id, references(:contests, on_delete: :nothing, type: :binary_id), null: false
 
       timestamps()
     end
