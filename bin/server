@@ -1,0 +1,10 @@
+#! /bin/bash
+
+mix local.rebar
+mix compile
+
+mkdir priv/static
+npm run deploy --prefix ./assets
+mix phx.digest
+
+mix phx.server

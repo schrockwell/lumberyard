@@ -17,7 +17,8 @@ After=network.target
 [Service]
 WorkingDirectory=/srv/www/logs.wwsac.com/lumberyard
 EnvironmentFile=/srv/www/logs.wwsac.com/lumberyard/.env
-ExecStart=/usr/bin/mix phx.server
+ExecStart=/srv/www/logs.wwsac.com/lumberyard/bin/server
+WorkingDirectory=/srv/www/logs.wwsac.com/lumberyard
 User=rockwell
 Restart=always
 
