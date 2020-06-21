@@ -1,1 +1,11 @@
-<%= render LumberWeb.WwsacSubmissionView, "_upload_form.html", assigns %>
+<%= if @contest == nil do %>
+  <div class="my-8 bg-blue-100 text-blue-900 p-4">
+    <h4 class="text-lg font-semibold mb-4">Come back soon!</h4>
+
+    <%= if @next_contest do %>
+      The next contest begins on <%= wwsac_submission_before(@next_contest.starts_at) %>.
+    <% end %>
+  </div>
+<% else %>
+  <%= render LumberWeb.WwsacSubmissionView, "_upload_form.html", assigns %>
+<% end %>

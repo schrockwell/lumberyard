@@ -26,7 +26,7 @@ defmodule Lumber.Wwsac do
       from(c in Contest,
         where: c.type == "WWSAC",
         where: c.starts_at <= ^DateTime.utc_now(),
-        # where: c.submissions_before >= ^DateTime.utc_now(),
+        where: c.submissions_before >= ^DateTime.utc_now(),
         order_by: [desc: c.starts_at],
         limit: 1
       )
