@@ -95,8 +95,8 @@ defmodule Lumber.WwsacResults do
       group_by: s.callsign,
       select: %{
         callsign: s.callsign,
-        qsos: sum(s.qso_count),
-        points: sum(s.final_score),
+        qsos: sum(fragment("coalesce(?, 0)", s.qso_count)),
+        points: sum(fragment("coalesce(?, 0)", s.final_score)),
         count: count(s.id)
       }
     )
