@@ -28,6 +28,25 @@
     <%= render_many @results, LumberWeb.WwsacContestView, "_result.html", my_callsign: @my_callsign %>
 </div>
 
+<%= if all_empty?(@results) do %>
+    <div class="mb-8 text-gray-500 italic">
+        No entries have been received.
+    </div>
+<% end %>
+
+
+<%= if !all_empty?(@results) && empty_categories(@results) != [] do %>
+    <div class="mb-8 text-gray-500 italic">
+        <div class="mb-2">Categories with no entries:</div>
+
+        <ul class="bulleted">
+            <%= for result <- empty_categories(@results) do %>
+                <li><%= result.category.title %></li>
+            <% end %>
+        </ul>
+    </div>
+<% end %>
+
 <script>
     document.getElementById('date-select').addEventListener('change', function(event) {
         window.location = event.target.value;

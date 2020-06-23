@@ -24,6 +24,25 @@
     <%= render_many @leaderboards, LumberWeb.WwsacLeaderboardView, "_leaderboard.html", my_callsign: @my_callsign  %>
 </div>
 
+<%= if all_empty?(@leaderboards) do %>
+    <div class="mb-8 text-gray-500 italic">
+        No entries have been received.
+    </div>
+<% end %>
+
+<%= if !all_empty?(@leaderboards) && empty_categories(@leaderboards) != [] do %>
+    <div class="mb-8 text-gray-500 italic">
+        <div class="mb-2">Categories with no entries:</div>
+
+        <ul class="bulleted">
+            <%= for leaderboard <- empty_categories(@leaderboards) do %>
+                <li><%= leaderboard.category.title %></li>
+            <% end %>
+        </ul>
+    </div>
+<% end %>
+
+
 <script>
     document.getElementById('year-select').addEventListener('change', function(event) {
         window.location = event.target.value;
