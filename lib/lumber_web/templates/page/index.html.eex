@@ -7,5 +7,7 @@
     <% end %>
   </div>
 <% else %>
-  <%= render LumberWeb.WwsacSubmissionView, "_upload_form.html", assigns %>
+  <div class="panel-container mb-12">
+    <%= render LumberWeb.WwsacSubmissionView, "_upload_form.html", assigns %>
+  </div>
 <% end %>

@@ -1,14 +1,14 @@
-<div class="bg-gray-200 my-8">
-    <div class="bg-gray-400 text-lg font-semibold px-4 py-2">Upload Your Log</div>
-    <div class="p-4">
+<div class="panel">
+    <div class="panel-title">Upload Your Log</div>
+    <div class="panel-body p-6">
         <%= if @changeset do %>
-            <p class="mt-2 mb-8 text-xl">
+            <p class="mb-8">
                 Now accepting submissions for <%= @contest.title %>, until <%= wwsac_submission_before(@contest.submissions_before) %>.
             </p>
 
             <%= form_for @changeset, Routes.wwsac_submission_path(@conn, :create), [multipart: true], fn f -> %>
-                <%= file_input f, :file, class: "mr-2" %>
-                <%= submit "Continue", class: "btn bg-blue-600 text-white hover:bg-blue-700" %>
+                <%= file_input f, :file, class: "mr-4 cursor-pointer outline-none" %>
+                <%= submit "Continue", class: "btn btn-blue" %>
             <% end  %>
 
             <%= if @changeset.action != nil && @changeset.errors != [] do %>

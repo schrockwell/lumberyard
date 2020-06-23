@@ -40,7 +40,7 @@
       <li><b>QSO Count:</b> <%= @sub.qso_count || "N/A" %></li>
       <li><b>QSO Points:</b> <%= @sub.qso_points || "N/A" %></li>
       <li><b>Prefix Count:</b> <%= @sub.prefix_count || "N/A" %></li>
-      <li><b>Final Score:</b> <%= delimit(@sub.final_score) %></li>
+      <li><b>Final Score:</b> <%= delimit(@conn, @sub.final_score) %></li>
     </ul>
   </div>
 </div>

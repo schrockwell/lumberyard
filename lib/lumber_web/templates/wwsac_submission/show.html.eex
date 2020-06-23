@@ -1,56 +1,57 @@
 <%= if @sub.completed_at do %>
-  <div class="text-center my-8">
-    <h1 class="text-3xl text-gray-800 mb-8">Thanks for your submission!</h1>
-    <a href="<%= Routes.wwsac_contest_path(@conn, :index) %>" class="text-xl bg-blue-600 hover:bg-blue-700 rounded-lg inline-block px-6 py-2 text-white">See this week's results →</a>
+  <div class="text-center mt-12 mb-16">
+    <h1 class="text-3xl text-gray-800 mb-12">Thanks for participating!</h1>
+    <a href="<%= Routes.wwsac_contest_path(@conn, :index) %>" class="link-action text-xl">See this week's results →</a>
   </div>
 <% else %>
-  <div class="bg-gray-200 my-8">
-    <div class="bg-gray-400 text-lg font-semibold px-4 py-2">Please Provide Log Details</div>
-    <div class="p-4">
-      <div class="flex flex-wrap mb-8">
-        <div class="flex-1 whitespace-no-wrap text-center">
-          <div class="text-3xl font-semibold"><%= delimit(@sub.qso_count || 0) %></div>
-          <div class="text-gray-600">QSOs</div>
+  <div class="panel-container my-8">
+    <div class="panel">
+      <div class="panel-title">Please Provide Log Details</div>
+      <div class="panel-body p-6">
+        <div class="flex flex-wrap mb-8">
+          <div class="flex-1 whitespace-no-wrap text-center">
+            <div class="text-3xl font-medium"><%= delimit(@conn, @sub.qso_count || 0) %></div>
+            <div class="text-gray-600">QSOs</div>
+          </div>
+
+          <div class="flex-1 whitespace-no-wrap text-center">
+            <div class="text-3xl font-medium"><%= delimit(@conn, @sub.qso_points || 0) %></div>
+            <div class="text-gray-600">QSO Points</div>
+          </div>
+
+          <div class="flex-1 whitespace-no-wrap text-center">
+            <div class="text-3xl font-medium"><%= delimit(@conn, @sub.prefix_count || 0) %></div>
+            <div class="text-gray-600">Prefixes</div>
+          </div>
+
+          <div class="flex-1 whitespace-no-wrap text-center">
+            <div class="text-3xl font-medium"><%= delimit(@conn, @sub.final_score || 0) %></div>
+            <div class="text-gray-600">Final Score</div>
+          </div>
         </div>
 
-        <div class="flex-1 whitespace-no-wrap text-center">
-          <div class="text-3xl font-semibold"><%= delimit(@sub.qso_points || 0) %></div>
-          <div class="text-gray-600">QSO Points</div>
-        </div>
+        <%= form_for @changeset, Routes.wwsac_submission_path(@conn, :update, @changeset.data), fn f -> %>
+          <input type="hidden" name="redirect" value="<%= @redirect %>">
 
-        <div class="flex-1 whitespace-no-wrap text-center">
-          <div class="text-3xl font-semibold"><%= delimit(@sub.prefix_count || 0) %></div>
-          <div class="text-gray-600">Prefixes</div>
-        </div>
+          <%= form_text_field(f, :callsign, "Callsign", class: "font-mono uppercase", placeholder: "MYCALL") %>
 
-        <div class="flex-1 whitespace-no-wrap text-center">
-          <div class="text-3xl font-semibold"><%= delimit(@sub.final_score || 0) %></div>
-          <div class="text-gray-600">Final Score</div>
-        </div>
-      </div>
+          <%= form_select(f, :age_group, "Age Group", @options.age_group) %>
 
-      <%= form_for @changeset, Routes.wwsac_submission_path(@conn, :update, @changeset.data), fn f -> %>
-        <input type="hidden" name="redirect" value="<%= @redirect %>">
+          <%= form_select(f, :power_level, "Power Level", @options.power_level) %>
 
-        <%= form_text_field(f, :callsign, "Callsign", class: "font-mono uppercase", placeholder: "MYCALL") %>
+          <%= form_text_field(f, :email, "Email", placeholder: "Required", hint: "We will only use your address for contest communications.") %>
 
-        <%= form_select(f, :age_group, "Age Group", @options.age_group) %>
+          <%= form_checkbox(f, :send_notifications, "E-mail me results of this week's contest") %>
 
-        <%= form_select(f, :power_level, "Power Level", @options.power_level) %>
+          <%= submit class: "btn bg-blue-600 text-white hover:bg-blue-700" do %>
+            Submit Log
+          <% end %>
 
-        <%= form_text_field(f, :email, "Email", placeholder: "Required", hint: "We will only use your address for contest communications.") %>
+          <span class="mx-6 text-gray-500 italic">or</span>
 
-        <%= form_checkbox(f, :send_notifications, "E-mail me results of this week's contest") %>
-
-        <%= submit class: "btn bg-blue-600 text-white hover:bg-blue-700" do %>
-           Submit Log
+          <button type="submit" name="cancel" value="true" class="btn btn-gray">
+            Cancel
+          </button>
         <% end %>
-
-        <span class="mx-4 text-gray-600 italic">or</span>
-
-        <button type="submit" name="cancel" value="true" class="btn border-2 border-gray-600 text-gray-600 hover:bg-gray-300">
-          Cancel
-        </button>
-      <% end %>
   </div>
 <% end %>

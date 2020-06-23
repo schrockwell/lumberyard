@@ -15,6 +15,11 @@ defmodule Lumber.Format do
     |> Enum.join(",")
   end
 
+  def delimit(%Plug.Conn{} = conn, int) when is_integer(int) do
+    locale = Cldr.Plug.AcceptLanguage.get_cldr_locale(conn) || Lumber.Cldr.default_locale()
+    Lumber.Cldr.Number.to_string!(int, locale: locale)
+  end
+
   def long_date(datetime) do
     Timex.format!(datetime, "{Mfull} {D}, {YYYY}")
   end
