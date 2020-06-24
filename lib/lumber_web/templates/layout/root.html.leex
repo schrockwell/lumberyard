@@ -18,12 +18,12 @@
   </head>
 
   <body class="bg-gray-200">
-    <div class="bg-white border-b border-gray-300 mb-8">
+    <div class="bg-white border-b border-gray-300">
       <div class="mx-3 sm:mx-6 md:mx-12 flex justify-between items-center text-gray-600">
         <a class="text-lg font-medium text-gray-800" href="<%= Routes.page_path(@conn, :index) %>">WWSAC Log Database</a>
 
         <div class="flex">
-          <a href="<%= Routes.wwsac_submission_path(@conn, :new) %>" class="block hover:text-gray-700 p-4">Submit a Log</a>
+          <a href="<%= Routes.page_path(@conn, :index) %>" class="block hover:text-gray-700 p-4">Submit a Log</a>
           <a href="<%= Routes.wwsac_contest_path(@conn, :index) %>" class="block hover:text-gray-700 p-4">Results</a>
           <a href="<%= Routes.wwsac_leaderboard_path(@conn, :index) %>" class="block hover:text-gray-700 p-4">Leaderboard</a>
         </div>
@@ -31,9 +31,10 @@
     </div>
 
     <%= if LumberWeb.Authentication.role(@conn) == :admin do %>
-      <div class="bg-white -mt-8 text-sm">
+      <div class="bg-white border-b text-sm">
         <div class="mx-3 sm:mx-6 md:mx-12 flex justify-between items-center text-gray-600">
-          <div class="flex -ml-4">
+          <div class="flex -ml-4 items-center">
+            <span class="font-semibold mx-4 text-gray-800">Admin</span>
             <a href="<%= Routes.admin_wwsac_contest_path(@conn, :index) %>" class="block hover:text-gray-700 px-4 py-2">Submissions</a>
           </div>
           <div>
@@ -43,14 +44,14 @@
       </div>
     <% end %>
 
-    <div class="mx-3 sm:mx-6 md:mx-12">
+    <div class="mx-3 sm:mx-6 md:mx-12 mt-8">
       <%= @inner_content %>
     </div>
 
-    <div class="mx-3 sm:mx-6 md:mx-12 mb-8 text-sm text-gray-600 italic border-t border-gray-300 pt-8">
-      <a href="https://wwsac.com/" class="underline hover:text-gray-700">Learn More</a> –
-      <a href="https://wwsac.com/rules.html" class="underline hover:text-gray-700">Rules</a> –
-      <a href="https://wwsac.com/contact.html" class="underline hover:text-gray-700">Contact Support</a>
+    <div class="mx-3 sm:mx-6 md:mx-12 mb-8 text-sm text-gray-500 italic border-t border-gray-300 pt-8">
+      <a href="https://wwsac.com/" class="hover:text-gray-600">Learn More</a>  – 
+      <a href="https://wwsac.com/rules.html" class="hover:text-gray-600">Contest Rules</a>  – 
+      <a href="https://wwsac.com/contact.html" class="hover:text-gray-600">Contact Support</a>
     </div>
   </body>
 </html>

@@ -55,6 +55,18 @@
   @apply text-lg px-8 py-3;
 }
 
+.btn-sm {
+  @apply text-sm px-4 py-1;
+}
+
+.btn-default {
+  @apply border;
+
+  &:hover {
+    @apply bg-gray-200;
+  }
+}
+
 .btn-blue {
   @apply bg-blue-500 text-white;
 
@@ -76,7 +88,7 @@
 }
 
 .input {
-  @apply inline-block border-2 border-transparent bg-white rounded-lg px-4 py-2;
+  @apply inline-block border bg-white shadow-inner rounded-sm px-4 py-2;
 }
 
 .input:focus {
@@ -93,7 +105,7 @@
 
 .table {
   thead {
-    @apply border-b;
+    @apply text-sm text-gray-500 font-medium;
   }
 
   td,

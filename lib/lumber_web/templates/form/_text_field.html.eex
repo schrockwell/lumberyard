@@ -3,8 +3,8 @@
     <%= @label %>
   </label>
 
-  <%= text_input @form, @field, placeholder: assigns[:placeholder], class: "appearance-none inline-block mr-4 w-64 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500 #{to_string(assigns[:class])}" %>
-  
+  <%= text_input @form, @field, placeholder: assigns[:placeholder], class: "shadow-inner appearance-none inline-block mr-4 w-64 border rounded-sm py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-blue-500 #{to_string(assigns[:class])}" %>
+
   <%= error_tag(@form, @field) %>
 
   <%= if assigns[:hint] do %>

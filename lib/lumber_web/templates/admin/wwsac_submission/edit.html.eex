@@ -1,6 +1,9 @@
-<div class="bg-gray-200 my-8">
-  <div class="bg-gray-400 text-lg font-semibold px-4 py-2">Modify Submission for <%= @sub.contest.title %> (<%= long_date(@sub.contest.starts_at) %>)</div>
-  <div class="p-4">
-    <%= render("_form.html", Map.merge(assigns, %{action: Routes.admin_wwsac_submission_path(@conn, :update, @sub)})) %>
+<div class="panel-container my-8">
+  <div class="panel">
+    <div class="panel-title">Modify Submission for <%= @sub.contest.title %> (<%= long_date(@sub.contest.starts_at) %>)</div>
+    <div class="panel-body p-6">
+
+      <%= render("_form.html", Map.merge(assigns, %{action: Routes.admin_wwsac_submission_path(@conn, :update, @sub)})) %>
+    </div>
   </div>
 </div>

@@ -4,7 +4,7 @@
   </label>
 
   <div class="inline-block relative">
-    <%= select @form, @field, @options, class: "inline-block w-64 bg-white border border-gray-300 focus:border-gray-500 px-3 py-3 mr-4 rounded focus:outline-none" %>
+    <%= select @form, @field, @options, class: "inline-block w-64 bg-white border border-gray-300 focus:border-blue-500 px-3 py-3 mr-4 rounded-sm focus:outline-none" %>
 
     <%= error_tag(@form, @field) %>
   </div>

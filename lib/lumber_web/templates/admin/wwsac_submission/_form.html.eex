@@ -2,7 +2,7 @@
   <div class="flex">
     <div class="md:w-1/2">
       <%= hidden_input(f, :contest_id) %>
-      
+
       <%= form_text_field(f, :callsign, "Callsign", class: "font-mono uppercase", placeholder: "MYCALL") %>
 
       <%= form_select(f, :age_group, "Age Group", @options.age_group) %>
@@ -22,7 +22,7 @@
     </div>
   </div>
 
-  <%= submit class: "btn bg-blue-600 text-white hover:bg-blue-700" do %>
+  <%= submit class: "btn bg-blue-500 text-white hover:bg-blue-700" do %>
      Save Changes
   <% end %>
 <% end %>
