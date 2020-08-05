@@ -59,11 +59,6 @@ defmodule HamRadio.Cabrillo.Parser do
     Stream.transform(word_stream, {nil, []}, &transform_word/2)
   end
 
-  # Special case
-  defp transform_word("END-OF-LOG:", _) do
-    {[{"END-OF-LOG", ""}], {nil, []}}
-  end
-
   # Set the tag if we're looking for one
   defp transform_word(word, {nil, []} = acc) do
     if String.ends_with?(word, ":") do
@@ -76,11 +71,17 @@ defmodule HamRadio.Cabrillo.Parser do
 
   defp transform_word(word, {key, words}) do
     if String.ends_with?(word, ":") do
-      # We're done here!
+      # We're starting a new tag! So accumulate all the words so far and emit the previous tag
       string = words |> Enum.reverse() |> Enum.join(" ")
 
       word = String.trim_trailing(word, ":")
-      {[{key, string}], {word, []}}
+
+      # Special case: nothing else to parse, so emit previous tag AND the final one
+      if word == "END-OF-LOG" do
+        {[{key, string}, {"END-OF-LOG", ""}], {nil, []}}
+      else
+        {[{key, string}], {word, []}}
+      end
     else
       {[], {key, [word | words]}}
     end

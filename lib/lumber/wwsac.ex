@@ -127,11 +127,13 @@ defmodule Lumber.Wwsac do
     end
   end
 
-  def analyze_wwsac_submission_file_changeset(%{valid?: false} = changeset) do
+  def analyze_wwsac_submission_file_changeset(changeset, opts \\ [])
+
+  def analyze_wwsac_submission_file_changeset(%{valid?: false} = changeset, _opts) do
     changeset
   end
 
-  def analyze_wwsac_submission_file_changeset(%{valid?: true} = changeset) do
+  def analyze_wwsac_submission_file_changeset(%{valid?: true} = changeset, opts) do
     log =
       changeset
       |> get_field(:file_contents)
@@ -151,6 +153,14 @@ defmodule Lumber.Wwsac do
         |> Enum.reduce(changeset, fn e, cs ->
           add_error(cs, :wwsac_log, e)
         end)
+
+      opts[:score_only] ->
+        change(changeset,
+          qso_count: length(log.contacts),
+          qso_points: log.total_contact_points,
+          prefix_count: log.total_prefixes,
+          final_score: log.final_score
+        )
 
       true ->
         change(changeset,
@@ -278,11 +288,20 @@ defmodule Lumber.Wwsac do
     Logs.guess_format(sub.file_contents)
   end
 
+  def __rescore_one__(sub_id) do
+    Submission
+    |> Repo.get(sub_id)
+    |> change()
+    |> analyze_wwsac_submission_file_changeset(score_only: true)
+    |> Repo.update()
+  end
+
   def __rescore_all__(opts \\ []) do
     query =
       from(s in Submission,
         where: not is_nil(s.completed_at),
         where: is_nil(s.rejected_at),
+        where: is_nil(s.modified_at),
         select: s.id
       )
 
@@ -298,11 +317,8 @@ defmodule Lumber.Wwsac do
     results =
       sub_ids
       |> Task.async_stream(fn sub_id ->
-        Submission
-        |> Repo.get(sub_id)
-        |> change()
-        |> analyze_wwsac_submission_file_changeset()
-        |> Repo.update()
+        sub_id
+        |> __rescore_one__()
         |> case do
           {:ok, _} -> {:ok, sub_id}
           {:error, _} -> {:error, sub_id}
