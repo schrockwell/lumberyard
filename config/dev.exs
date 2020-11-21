@@ -1,13 +1,13 @@
 use Mix.Config
 
 # Configure your database
+# DATABASE_URL is read in the Lumber.Repo.init/2 callback
 config :lumber, Lumber.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "lumber_dev",
-  hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
-  pool_size: 10
+  pool_size: 2,
+  maintenance_database: "defaultdb",
+  ssl: true
+
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
