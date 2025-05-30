@@ -4,9 +4,9 @@ use Mix.Config
 # DATABASE_URL is read in the Lumber.Repo.init/2 callback
 config :lumber, Lumber.Repo,
   show_sensitive_data_on_connection_error: true,
-  pool_size: 2,
-  maintenance_database: "defaultdb",
-  ssl: true
+  pool_size: 2
+  # maintenance_database: "defaultdb",
+  # ssl: false
 
 
 # For development, we disable any cache and enable
