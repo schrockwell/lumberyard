@@ -62,6 +62,30 @@ defmodule Lumber.Wwsac do
     end
   end
 
+  def seed_contests(start_week, end_week) do
+    # May 12, 2020 at 1Z
+    {:ok, start_date, 0} = DateTime.from_iso8601("2020-05-12T01:00:00Z")
+
+    Repo.transaction(fn ->
+      Enum.each(start_week..end_week, fn week ->
+        starts_at = Timex.shift(start_date, weeks: (week - 1))
+        ends_at = Timex.shift(starts_at, hours: 1)
+        submissions_before = Timex.shift(ends_at, days: 1)
+
+        Repo.insert!(%Contest{
+          title: "WWSAC \##{week}",
+          starts_at: starts_at,
+          ends_at: ends_at,
+          submissions_before: submissions_before,
+          type: "WWSAC"
+        })
+      end)
+    end)
+
+    IO.puts("Created WWSAC contests from week #{start_week} to week #{end_week}")
+    :ok
+  end
+
   def get_previous_contests do
     from(c in Contest,
       where: c.type == "WWSAC",
