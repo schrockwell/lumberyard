@@ -5,7 +5,7 @@ defmodule Lumber.MixProject do
     [
       app: :lumber,
       version: "0.1.1",
-      elixir: "~> 1.7",
+      elixir: "~> 1.18",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
@@ -49,7 +49,8 @@ defmodule Lumber.MixProject do
       {:plug_cowboy, "~> 2.0"},
       {:timex, "~> 3.6.2"},
       {:ex_cldr, "~> 2.0"},
-      {:ex_cldr_numbers, "~> 2.0"}
+      {:ex_cldr_numbers, "~> 2.0"},
+      {:ex_cldr_plugs, "~> 1.3"},
     ]
   end
 
