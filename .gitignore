@@ -35,3 +35,5 @@ npm-debug.log
 # this depending on your deployment strategy.
 /priv/static/
 /priv/ca-certificate.crt
+
+.DS_Store
