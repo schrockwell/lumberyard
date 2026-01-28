@@ -1,0 +1,40 @@
+service: lumber
+
+image: schrockwell/lumber
+
+servers:
+  web:
+    - kamal.schrockwell.com
+
+proxy:
+  ssl: true
+  host: lumber.schrockwell.com
+  app_port: 4000
+
+registry:
+  server: registry.digitalocean.com
+  username: schrockwell@gmail.com
+  password:
+    - KAMAL_REGISTRY_PASSWORD
+
+builder:
+  arch: amd64
+  remote: ssh://root@kamal.schrockwell.com # build on the correct architecture
+  secrets:
+    - ADMIN_PASSWORD
+    - DATABASE_URL
+    - SECRET_KEY_BASE
+
+env:
+  clear:
+    PHX_HOST: lumber.schrockwell.com
+    POOL_SIZE: 2
+  secret:
+    - ADMIN_PASSWORD
+    - DATABASE_URL
+    - SECRET_KEY_BASE
+
+aliases:
+  console: app exec --interactive --reuse "/app/bin/lumber remote"
+  shell: app exec --interactive --reuse "/bin/bash"
+  logs: app logs -f

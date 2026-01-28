@@ -37,3 +37,4 @@ npm-debug.log
 /priv/ca-certificate.crt
 
 .DS_Store
+/.secrets
