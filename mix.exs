@@ -50,10 +50,7 @@ defmodule Lumber.MixProject do
       {:gettext, "~> 0.26"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.5"},
-      {:timex, "~> 3.7"},
-      {:ex_cldr, "~> 2.0"},
-      {:ex_cldr_numbers, "~> 2.0"},
-      {:ex_cldr_plugs, "~> 1.3"}
+      {:timex, "~> 3.7"}
     ]
   end
 

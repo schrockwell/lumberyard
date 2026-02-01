@@ -10,22 +10,22 @@
       <div class="panel-body p-6">
         <div class="flex flex-wrap mb-8">
           <div class="flex-1 whitespace-no-wrap text-center">
-            <div class="text-3xl font-medium">{delimit(@conn, @sub.qso_count || 0)}</div>
+            <div class="text-3xl font-medium">{delimit(@sub.qso_count || 0)}</div>
             <div class="text-gray-600">QSOs</div>
           </div>
 
           <div class="flex-1 whitespace-no-wrap text-center">
-            <div class="text-3xl font-medium">{delimit(@conn, @sub.qso_points || 0)}</div>
+            <div class="text-3xl font-medium">{delimit(@sub.qso_points || 0)}</div>
             <div class="text-gray-600">QSO Points</div>
           </div>
 
           <div class="flex-1 whitespace-no-wrap text-center">
-            <div class="text-3xl font-medium">{delimit(@conn, @sub.prefix_count || 0)}</div>
+            <div class="text-3xl font-medium">{delimit(@sub.prefix_count || 0)}</div>
             <div class="text-gray-600">Prefixes</div>
           </div>
 
           <div class="flex-1 whitespace-no-wrap text-center">
-            <div class="text-3xl font-medium">{delimit(@conn, @sub.final_score || 0)}</div>
+            <div class="text-3xl font-medium">{delimit(@sub.final_score || 0)}</div>
             <div class="text-gray-600">Final Score</div>
           </div>
         </div>

@@ -51,7 +51,5 @@ defmodule LumberWeb.Endpoint do
   plug Plug.Head
   plug Plug.Session, @session_options
 
-  plug Cldr.Plug.AcceptLanguage, cldr_backend: Lumber.Cldr
-
   plug LumberWeb.Router
 end

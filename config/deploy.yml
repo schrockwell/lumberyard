@@ -10,14 +10,14 @@ proxy:
   ssl: true
   hosts:
     #- logs.wwsac.com
-    - lumber.schrockwell.com
+    - wwsac.schrockwell.com
   app_port: 4000
 
 env:
   clear:
     POOL_SIZE: 2
     PORT: 4000
-    PHX_HOST: lumber.schrockwell.com
+    PHX_HOST: wwsac.schrockwell.com
   secret:
     - SSE_MASTER_KEY
 

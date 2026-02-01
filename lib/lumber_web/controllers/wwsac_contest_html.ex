@@ -56,10 +56,10 @@ defmodule LumberWeb.WwsacContestHTML do
                       {operator.callsign}
                     </span>
                   </td>
-                  <td class="py-1 text-right">{if operator.qso_count, do: delimit(@conn, operator.qso_count), else: "–"}</td>
-                  <td class="py-1 text-right">{if operator.qso_points, do: delimit(@conn, operator.qso_points), else: "–"}</td>
-                  <td class="py-1 text-right">{if operator.prefix_count, do: delimit(@conn, operator.prefix_count), else: "–"}</td>
-                  <td class="py-1 pr-4 text-right">{delimit(@conn, operator.final_score)}</td>
+                  <td class="py-1 text-right">{if operator.qso_count, do: delimit(operator.qso_count), else: "–"}</td>
+                  <td class="py-1 text-right">{if operator.qso_points, do: delimit(operator.qso_points), else: "–"}</td>
+                  <td class="py-1 text-right">{if operator.prefix_count, do: delimit(operator.prefix_count), else: "–"}</td>
+                  <td class="py-1 pr-4 text-right">{delimit(operator.final_score)}</td>
                 </tr>
               <% end %>
             </tbody>

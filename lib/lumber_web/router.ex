@@ -24,6 +24,7 @@ defmodule LumberWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/up", PageController, :up
 
     get "/logout", LoginController, :delete, as: :login
     resources "/login", LoginController, singleton: true

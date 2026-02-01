@@ -53,9 +53,9 @@ defmodule LumberWeb.WwsacLeaderboardHTML do
 
                     <span class="font-medium tracking-wide">{operator.callsign}</span>
                   </td>
-                  <td class="py-1 text-right">{delimit(@conn, operator.count)}</td>
-                  <td class="py-1 text-right">{delimit(@conn, operator.qsos)}</td>
-                  <td class="py-1 text-right pr-4">{delimit(@conn, operator.points)}</td>
+                  <td class="py-1 text-right">{delimit(operator.count)}</td>
+                  <td class="py-1 text-right">{delimit(operator.qsos)}</td>
+                  <td class="py-1 text-right pr-4">{delimit(operator.points)}</td>
                 </tr>
               <% end %>
             </tbody>

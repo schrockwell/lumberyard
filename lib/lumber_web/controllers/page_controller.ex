@@ -12,6 +12,10 @@ defmodule LumberWeb.PageController do
     |> render()
   end
 
+  def up(conn, _) do
+    send_resp(conn, 200, "OK")
+  end
+
   defp assign_next_contest(conn, _) do
     case Wwsac.get_next_contest() do
       {:ok, contest} -> assign(conn, :next_contest, contest)

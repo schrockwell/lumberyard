@@ -57,7 +57,7 @@
               </td>
               <td>{sub.age_group}</td>
               <td>{sub.power_level}</td>
-              <td class="text-right">{delimit(@conn, sub.final_score)}</td>
+              <td class="text-right">{delimit(sub.final_score)}</td>
               <td class="text-right">{sub.completed_at}</td>
               <td class="text-right">
                 <%= if sub.modified_at do %>
