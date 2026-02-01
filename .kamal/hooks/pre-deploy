@@ -1,0 +1,2 @@
+#! /bin/bash
+kamal app exec "sse with production -- /app/bin/migrate"

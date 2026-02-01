@@ -7,32 +7,22 @@
 # This file is based on these images:
 #
 #   - https://hub.docker.com/r/hexpm/elixir/tags - for the build image
-#   - https://hub.docker.com/_/debian/tags?name=bookworm-20250520-slim - for the release image
+#   - https://hub.docker.com/_/debian/tags?name=trixie-20260112-slim - for the release image
 #   - https://pkgs.org/ - resource for finding needed packages
-#   - Ex: docker.io/hexpm/elixir:1.18.4-erlang-27.3.4-debian-bookworm-20250520-slim
+#   - Ex: docker.io/hexpm/elixir:1.18.4-erlang-27.3.4-debian-trixie-20260112-slim
 #
 ARG ELIXIR_VERSION=1.18.4
 ARG OTP_VERSION=27.3.4
-ARG DEBIAN_VERSION=bookworm-20250520-slim
+ARG DEBIAN_VERSION=trixie-20260112-slim
 
 ARG BUILDER_IMAGE="docker.io/hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="docker.io/debian:${DEBIAN_VERSION}"
 
 FROM ${BUILDER_IMAGE} AS builder
 
-# Load secrets into environment for all subsequent commands
-RUN --mount=type=secret,id=DATABASE_URL \
-  --mount=type=secret,id=SECRET_KEY_BASE \
-  --mount=type=secret,id=ADMIN_PASSWORD \
-  echo "export DATABASE_URL=$(cat /run/secrets/DATABASE_URL)" >> /etc/profile.d/secrets.sh && \
-  echo "export SECRET_KEY_BASE=$(cat /run/secrets/SECRET_KEY_BASE)" >> /etc/profile.d/secrets.sh && \
-  echo "export ADMIN_PASSWORD=$(cat /run/secrets/ADMIN_PASSWORD)" >> /etc/profile.d/secrets.sh
-
-SHELL ["/bin/bash", "-l", "-c"]
-
 # install build dependencies
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends build-essential git \
+  && apt-get install -y --no-install-recommends build-essential git wget \
   && rm -rf /var/lib/apt/lists/*
 
 # prepare build dir
@@ -44,7 +34,6 @@ RUN mix local.hex --force \
 
 # set build ENV
 ENV MIX_ENV="prod"
-ENV ERL_FLAGS="+JPperf true"
 
 # install mix dependencies
 COPY mix.exs mix.lock ./
@@ -54,8 +43,7 @@ RUN mkdir config
 # copy compile-time config files before we compile dependencies
 # to ensure any relevant config change will trigger the dependencies
 # to be re-compiled.
-COPY config/config.exs config/prod.exs config/
-COPY config/config.exs config/prod.secret.exs config/
+COPY config/config.exs config/${MIX_ENV}.exs config/
 RUN mix deps.compile
 
 RUN mix assets.setup
@@ -64,20 +52,33 @@ COPY priv priv
 
 COPY lib lib
 
+# Compile the release
+RUN mix compile
+
 COPY assets assets
 
 # compile assets
 RUN mix assets.deploy
 
-RUN mix compile
+# Changes to config/runtime.exs don't require recompiling the code
+COPY config/runtime.exs config/
+
+COPY rel rel
 RUN mix release
+
+# download SSE for secrets management
+ENV SSE_VERSION=0.1.3
+RUN wget "https://github.com/schrockwell/sse/releases/download/v${SSE_VERSION}/sse-linux-amd64.tar.gz" -O /tmp/sse.tar.gz && \
+  tar -xzf /tmp/sse.tar.gz -C /usr/local/bin/ && \
+  rm /tmp/sse.tar.gz
+
 
 # start a new build stage so that the final image will only contain
 # the compiled release and other runtime necessities
 FROM ${RUNNER_IMAGE} AS final
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends libstdc++6 openssl libncurses5 locales ca-certificates imagemagick \
+  && apt-get install -y --no-install-recommends libstdc++6 openssl libncurses6 locales ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
 # Set the locale
@@ -91,11 +92,15 @@ ENV LC_ALL=en_US.UTF-8
 WORKDIR "/app"
 RUN chown nobody /app
 
+# copy sse binary and env.toml for secrets management
+COPY --from=builder /usr/local/bin/sse /usr/local/bin/sse
+COPY env.toml ./
+
 # set runner ENV
 ENV MIX_ENV="prod"
 
 # Only copy the final release from the build stage
-COPY --from=builder --chown=nobody:root /app/_build/prod/rel/veotags ./
+COPY --from=builder --chown=nobody:root /app/_build/${MIX_ENV}/rel/lumber ./
 
 USER nobody
 
@@ -104,7 +109,5 @@ USER nobody
 # above and adding an entrypoint. See https://github.com/krallin/tini for details
 # ENTRYPOINT ["/tini", "--"]
 
-EXPOSE 4000
-
-ENTRYPOINT ["/app/bin/docker-entrypoint"]
+ENTRYPOINT ["/app/bin/entrypoint"]
 CMD ["/app/bin/server"]
