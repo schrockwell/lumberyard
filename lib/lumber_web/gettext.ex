@@ -20,5 +20,5 @@ defmodule LumberWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :lumber
+  use Gettext.Backend, otp_app: :lumber
 end

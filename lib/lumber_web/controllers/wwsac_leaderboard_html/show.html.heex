@@ -1,0 +1,40 @@
+<div class="flex justify-between items-center my-8">
+  <h1 class="text-2xl font-semibold text-gray-800">{@year} Leaderboard</h1>
+  <div>
+    <%= if length(@years) > 1 do %>
+      <select class="select !bg-white shadow !pr-8" id="year-select">
+        <%= for year <- @years do %>
+          <option
+            value={~p"/wwsac/leaderboard/#{year}"}
+            selected={year == @year}
+          >{year}</option>
+        <% end %>
+      </select>
+    <% end %>
+  </div>
+</div>
+
+<%= if @year == 2020 do %>
+  <div class="info border-blue-500 mt-8 mb-10 flex items-center">
+    <div class="info-icon">ℹ️</div>
+    <div>Logs submitted before June 23 are still being processed and are not included in these totals yet.</div>
+  </div>
+<% end %>
+
+<div class="panel-container flex flex-wrap">
+  <%= for leaderboard <- @leaderboards do %>
+    <.leaderboard_panel leaderboard={leaderboard} my_callsign={@my_callsign} conn={@conn} />
+  <% end %>
+</div>
+
+<%= if all_empty?(@leaderboards) do %>
+  <div class="mb-8 text-gray-500 italic">
+    No entries have been received.
+  </div>
+<% end %>
+
+<script>
+  document.getElementById('year-select').addEventListener('change', function(event) {
+    window.location = event.target.value;
+  });
+</script>

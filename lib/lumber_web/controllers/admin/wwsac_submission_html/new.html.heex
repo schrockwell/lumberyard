@@ -1,0 +1,8 @@
+<div class="panel-container my-8">
+  <div class="panel">
+    <div class="panel-title">New Submission for {@sub.contest.title} ({long_date(@sub.contest.starts_at)})</div>
+    <div class="panel-body p-6">
+      <.submission_form changeset={@changeset} action={~p"/admin/submissions"} options={@options} />
+    </div>
+  </div>
+</div>

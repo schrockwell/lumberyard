@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 # Configure your database
 # DATABASE_URL is read in the Lumber.Repo.init/2 callback
@@ -14,20 +14,15 @@ config :lumber, Lumber.Repo,
 #
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
-# with webpack to recompile .js and .css sources.
+# with esbuild and tailwind to recompile .js and .css sources.
 config :lumber, LumberWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
   code_reloader: true,
   check_origin: false,
   watchers: [
-    node: [
-      "node_modules/webpack/bin/webpack.js",
-      "--mode",
-      "development",
-      "--watch-stdin",
-      cd: Path.expand("../assets", __DIR__)
-    ]
+    esbuild: {Esbuild, :install_and_run, [:lumber, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:lumber, ~w(--watch)]}
   ]
 
 # ## SSL Support
@@ -60,8 +55,7 @@ config :lumber, LumberWeb.Endpoint,
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/lumber_web/(live|views)/.*(ex)$",
-      ~r"lib/lumber_web/templates/.*(eex)$"
+      ~r"lib/lumber_web/(controllers|live|components)/.*(ex|heex)$"
     ]
   ]
 

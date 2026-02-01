@@ -1,5 +1,5 @@
 defmodule LumberWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :lumber
+  use Phoenix.Endpoint, otp_app: :lumber, adapter: Bandit.PhoenixAdapter
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -23,9 +23,8 @@ defmodule LumberWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :lumber,
-    gzip: false
-
-  # only: ~w(css fonts images js favicon.ico robots.txt)
+    gzip: false,
+    only: LumberWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

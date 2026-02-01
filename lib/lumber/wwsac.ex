@@ -68,8 +68,8 @@ defmodule Lumber.Wwsac do
 
     Repo.transaction(fn ->
       Enum.each(start_week..end_week, fn week ->
-        starts_at = Timex.shift(start_date, weeks: (week - 1))
-        ends_at = Timex.shift(starts_at, hours: 1)
+        starts_at = start_date |> Timex.shift(weeks: week - 1) |> DateTime.truncate(:second)
+        ends_at = starts_at |> Timex.shift(hours: 1) |> DateTime.truncate(:second)
         submissions_before = Timex.shift(ends_at, days: 1)
 
         Repo.insert!(%Contest{

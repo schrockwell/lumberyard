@@ -1,0 +1,59 @@
+<%= if @sub.completed_at do %>
+  <div class="text-center mt-12 mb-16">
+    <h1 class="text-3xl text-gray-800 mb-12">Thanks for participating!</h1>
+    <a href={~p"/wwsac/contests"} class="link-action text-xl">See this week's results →</a>
+  </div>
+<% else %>
+  <div class="panel-container my-8">
+    <div class="panel">
+      <div class="panel-title">Please Provide Log Details</div>
+      <div class="panel-body p-6">
+        <div class="flex flex-wrap mb-8">
+          <div class="flex-1 whitespace-no-wrap text-center">
+            <div class="text-3xl font-medium">{delimit(@conn, @sub.qso_count || 0)}</div>
+            <div class="text-gray-600">QSOs</div>
+          </div>
+
+          <div class="flex-1 whitespace-no-wrap text-center">
+            <div class="text-3xl font-medium">{delimit(@conn, @sub.qso_points || 0)}</div>
+            <div class="text-gray-600">QSO Points</div>
+          </div>
+
+          <div class="flex-1 whitespace-no-wrap text-center">
+            <div class="text-3xl font-medium">{delimit(@conn, @sub.prefix_count || 0)}</div>
+            <div class="text-gray-600">Prefixes</div>
+          </div>
+
+          <div class="flex-1 whitespace-no-wrap text-center">
+            <div class="text-3xl font-medium">{delimit(@conn, @sub.final_score || 0)}</div>
+            <div class="text-gray-600">Final Score</div>
+          </div>
+        </div>
+
+        <.form :let={f} for={@changeset} action={~p"/wwsac/submit/#{@changeset.data}"}>
+          <input type="hidden" name="redirect" value={@redirect}>
+
+          <.input field={f[:callsign]} type="text" label="Callsign" class="font-mono uppercase" placeholder="MYCALL" />
+
+          <.input field={f[:age_group]} type="select" label="Age Group" options={@options.age_group} />
+
+          <.input field={f[:power_level]} type="select" label="Power Level" options={@options.power_level} />
+
+          <.input field={f[:email]} type="email" label="Email" placeholder="Required" hint="We will only use your address for contest communications." />
+
+          <.input field={f[:send_notifications]} type="checkbox" label="E-mail me results of this week's contest" />
+
+          <button type="submit" class="btn bg-blue-600 text-white hover:bg-blue-700">
+            Submit Log
+          </button>
+
+          <span class="mx-6 text-gray-500 italic">or</span>
+
+          <button type="submit" name="cancel" value="true" class="btn btn-gray">
+            Cancel
+          </button>
+        </.form>
+      </div>
+    </div>
+  </div>
+<% end %>

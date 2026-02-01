@@ -1,46 +1,11 @@
-/** assets/css/app.css */
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-/**
- * This injects Tailwind's base styles, which is a combination of
- * Normalize.css and some additional base styles.
- *
- * If using `postcss-import`, use this import instead:
- *
- * @import "tailwindcss/base";
- */
-@tailwind base;
-
-/**
-  * This injects any component classes registered by plugins.
-  *
-  * If using `postcss-import`, use this import instead:
-  *
-  * @import "tailwindcss/components";
-  */
-@tailwind components;
-
-/**
-  * Here you would add any of your custom component classes; stuff that you'd
-  * want loaded *before* the utilities so that the utilities could still
-  * override them.
-  *
-  * Example:
-  *
-  * .btn { ... }
-  * .form-input { ... }
-  *
-  * Or if using a preprocessor or `postcss-import`:
-  *
-  * @import "components/buttons";
-  * @import "components/forms";
-  */
+/* Custom component classes */
 
 .link {
-  @apply text-blue-500 no-underline transition-colors ease-in-out duration-200;
-
-  &:hover {
-    @apply text-blue-700;
-  }
+  @apply text-blue-500 no-underline transition-colors ease-in-out duration-200 hover:text-blue-700;
 }
 
 .link-action {
@@ -60,27 +25,15 @@
 }
 
 .btn-default {
-  @apply border;
-
-  &:hover {
-    @apply bg-gray-200;
-  }
+  @apply border hover:bg-gray-200;
 }
 
 .btn-blue {
-  @apply bg-blue-500 text-white;
-
-  &:hover {
-    @apply bg-blue-600;
-  }
+  @apply bg-blue-500 text-white hover:bg-blue-600;
 }
 
 .btn-gray {
-  @apply bg-white border text-gray-600 shadow-sm;
-
-  &:hover {
-    @apply bg-gray-100 text-gray-800;
-  }
+  @apply bg-white border text-gray-600 shadow-sm hover:bg-gray-100 hover:text-gray-800;
 }
 
 .btn:focus {
@@ -88,38 +41,28 @@
 }
 
 .input {
-  @apply inline-block border bg-white shadow-inner rounded-sm px-4 py-2;
-}
-
-.input:focus {
-  @apply outline-none border-blue-500;
+  @apply inline-block border bg-white shadow-inner rounded-sm px-4 py-2 focus:outline-none focus:border-blue-500;
 }
 
 .select {
-  @apply inline-block border-2 border-transparent bg-gray-200 rounded py-3 pl-4 pr-2;
+  @apply inline-block border-2 border-transparent bg-gray-200 rounded py-3 pl-4 pr-2 focus:outline-none focus:border-blue-500;
 }
 
-.select:focus {
-  @apply outline-none border-blue-500;
+.table thead {
+  @apply text-sm text-gray-500 font-medium;
 }
 
-.table {
-  thead {
-    @apply text-sm text-gray-500 font-medium;
-  }
-
-  td,
-  th {
-    @apply py-1;
-  }
+.table td,
+.table th {
+  @apply py-1;
 }
 
 ul.bulleted {
   @apply list-disc;
+}
 
-  li {
-    @apply ml-4;
-  }
+ul.bulleted li {
+  @apply ml-4;
 }
 
 th {
@@ -135,19 +78,11 @@ th {
 }
 
 .panel-title {
-  @apply font-medium text-gray-700 mb-2;
-
-  @screen sm {
-    @apply pl-4;
-  }
+  @apply font-medium text-gray-700 mb-2 sm:pl-4;
 }
 
 .panel-body {
-  @apply shadow -mx-4 bg-white text-gray-800;
-  
-  @screen sm {
-    @apply rounded mx-0;
-  }
+  @apply shadow -mx-4 bg-white text-gray-800 sm:rounded sm:mx-0;
 }
 
 .info {
@@ -157,29 +92,3 @@ th {
 .info-icon {
   @apply mr-6 text-2xl -my-1;
 }
-
-
-/**
-  * This injects all of Tailwind's utility classes, generated based on your
-  * config file.
-  *
-  * If using `postcss-import`, use this import instead:
-  *
-  * @import "tailwindcss/utilities";
-  */
-@tailwind utilities;
-
-/**
-  * Here you would add any custom utilities you need that don't come out of the
-  * box with Tailwind.
-  *
-  * Example :
-  *
-  * .bg-pattern-graph-paper { ... }
-  * .skew-45 { ... }
-  *
-  * Or if using a preprocessor or `postcss-import`:
-  *
-  * @import "utilities/background-patterns";
-  * @import "utilities/skew-transforms";
-  */

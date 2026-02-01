@@ -1,6 +1,0 @@
-<fieldset class="mb-8">
-  <label class="cursor-pointer">
-    <%= checkbox @form, @field, class: "mr-2" %>
-    <%= @label %>
-  </label>
-</fieldset>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <meta name="csrf-token" content={get_csrf_token()} />
+    <.live_title suffix=" · WWSAC">
+      {assigns[:page_title] || "Log Submission"}
+    </.live_title>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"}/>
+
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}></script>
+  </head>
+
+  <body class="bg-gray-200">
+    <div class="bg-white border-b border-gray-300">
+      <div class="mx-3 sm:mx-6 md:mx-12 flex justify-between items-center text-gray-600">
+        <a class="text-lg font-medium text-gray-800" href={~p"/"}>WWSAC Log Database</a>
+
+        <div class="flex">
+          <a href={~p"/"} class="block hover:text-gray-700 p-4">Submit a Log</a>
+          <a href={~p"/wwsac/contests"} class="block hover:text-gray-700 p-4">Results</a>
+          <a href={~p"/wwsac/leaderboard"} class="block hover:text-gray-700 p-4">Leaderboard</a>
+        </div>
+      </div>
+    </div>
+
+    <%= if LumberWeb.Authentication.role(@conn) == :admin do %>
+      <div class="bg-white border-b">
+        <div class="mx-3 sm:mx-6 md:mx-12 flex justify-between items-center text-gray-600">
+          <div class="flex -ml-4 items-center">
+            <span class="font-semibold mx-4 text-gray-800">Admin:</span>
+            <a href={~p"/admin/contests"} class="block hover:text-gray-700 px-4 py-2">Submissions</a>
+          </div>
+          <div>
+            <a href={~p"/logout"} class="block hover:text-gray-700 px-4 py-2">Log Out</a>
+          </div>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="mx-3 sm:mx-6 md:mx-12 mt-8">
+      {@inner_content}
+    </div>
+
+    <div class="mx-3 sm:mx-6 md:mx-12 mb-8 text-sm text-gray-500 italic border-t border-gray-300 pt-8">
+      <a href="https://wwsac.com/" class="hover:text-gray-600">Learn More</a>  -
+      <a href="https://wwsac.com/rules.html" class="hover:text-gray-600">Contest Rules</a>  -
+      <a href="https://wwsac.com/contact.html" class="hover:text-gray-600">Contact Support</a>
+    </div>
+  </body>
+</html>

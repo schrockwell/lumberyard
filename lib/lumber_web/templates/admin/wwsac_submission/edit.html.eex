@@ -1,9 +1,0 @@
-<div class="panel-container my-8">
-  <div class="panel">
-    <div class="panel-title">Modify Submission for <%= @sub.contest.title %> (<%= long_date(@sub.contest.starts_at) %>)</div>
-    <div class="panel-body p-6">
-
-      <%= render("_form.html", Map.merge(assigns, %{action: Routes.admin_wwsac_submission_path(@conn, :update, @sub)})) %>
-    </div>
-  </div>
-</div>
