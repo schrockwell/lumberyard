@@ -1,3 +1,5 @@
-#! /bin/bash
+#!/bin/bash
 eval "$(sse load production)"
+touch "${DATABASE_PATH}"
+/app/bin/migrate
 exec "$@"

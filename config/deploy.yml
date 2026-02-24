@@ -15,11 +15,15 @@ proxy:
 
 env:
   clear:
+    DATABASE_PATH: /app/data/lumber_prod.sqlite
     POOL_SIZE: 2
     PORT: 4000
     PHX_HOST: wwsac.schrockwell.com
   secret:
     - SSE_MASTER_KEY
+
+volumes:
+  - /root/mounts/lumber/data:/app/data
 
 aliases:
   console: app exec --interactive --reuse "/app/bin/lumber remote"

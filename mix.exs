@@ -36,7 +36,7 @@ defmodule Lumber.MixProject do
       {:phoenix, "~> 1.8.3"},
       {:phoenix_ecto, "~> 4.6"},
       {:ecto_sql, "~> 3.12"},
-      {:postgrex, ">= 0.0.0"},
+      {:ecto_sqlite3, "~> 0.17"},
       {:phoenix_live_view, "~> 1.0"},
       {:floki, ">= 0.0.0", only: :test},
       {:phoenix_html, "~> 4.2"},

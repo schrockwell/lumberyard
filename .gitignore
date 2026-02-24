@@ -39,3 +39,8 @@ npm-debug.log
 .DS_Store
 /.secrets
 /master.key
+
+# SQLite databases
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm

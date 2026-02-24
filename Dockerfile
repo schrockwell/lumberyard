@@ -7,13 +7,13 @@
 # This file is based on these images:
 #
 #   - https://hub.docker.com/r/hexpm/elixir/tags - for the build image
-#   - https://hub.docker.com/_/debian/tags?name=trixie-20260112-slim - for the release image
+#   - https://hub.docker.com/_/debian/tags?name=bookworm-20260202-slim - for the release image
 #   - https://pkgs.org/ - resource for finding needed packages
-#   - Ex: docker.io/hexpm/elixir:1.18.4-erlang-27.3.4-debian-trixie-20260112-slim
+#   - Ex: docker.io/hexpm/elixir:1.18.4-erlang-27.3.4.8-debian-bookworm-20260202-slim
 #
 ARG ELIXIR_VERSION=1.18.4
-ARG OTP_VERSION=27.3.4
-ARG DEBIAN_VERSION=trixie-20260112-slim
+ARG OTP_VERSION=27.3.4.8
+ARG DEBIAN_VERSION=bookworm-20260202-slim
 
 ARG BUILDER_IMAGE="docker.io/hexpm/elixir:${ELIXIR_VERSION}-erlang-${OTP_VERSION}-debian-${DEBIAN_VERSION}"
 ARG RUNNER_IMAGE="docker.io/debian:${DEBIAN_VERSION}"
@@ -22,7 +22,7 @@ FROM ${BUILDER_IMAGE} AS builder
 
 # install build dependencies
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends build-essential git wget \
+  && apt-get install -y --no-install-recommends build-essential git wget libtinfo-dev \
   && rm -rf /var/lib/apt/lists/*
 
 # prepare build dir
@@ -34,17 +34,18 @@ RUN mix local.hex --force \
 
 # set build ENV
 ENV MIX_ENV="prod"
+# Disable BEAM JIT to avoid QEMU emulation bugs during cross-compilation
+ENV ERL_FLAGS="+JPperf true"
 
 # install mix dependencies
 COPY mix.exs mix.lock ./
-RUN mix deps.get --only $MIX_ENV
 RUN mkdir config
 
 # copy compile-time config files before we compile dependencies
 # to ensure any relevant config change will trigger the dependencies
 # to be re-compiled.
 COPY config/config.exs config/${MIX_ENV}.exs config/
-RUN mix deps.compile
+RUN mix deps.get --only $MIX_ENV && mix deps.compile
 
 RUN mix assets.setup
 
@@ -91,6 +92,7 @@ ENV LC_ALL=en_US.UTF-8
 
 WORKDIR "/app"
 RUN chown nobody /app
+RUN mkdir -p /app/data && chown nobody:root /app/data
 
 # copy sse binary and env.toml for secrets management
 COPY --from=builder /usr/local/bin/sse /usr/local/bin/sse

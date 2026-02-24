@@ -10,8 +10,5 @@
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
-alias Lumber.Repo
-alias Lumber.Schedule.Contest
-
 # Create the first five years of WWSAC contests
-Lumber.Wwsac.seed_contests(1, 260)
+Lumber.Wwsac.seed_contests(1, 1000)
