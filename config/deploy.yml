@@ -9,7 +9,7 @@ servers:
 proxy:
   ssl: true
   hosts:
-    #- logs.wwsac.com
+    - logs.wwsac.com
     - wwsac.schrockwell.com
   app_port: 4000
 
